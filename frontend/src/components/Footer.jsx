@@ -20,11 +20,11 @@ export default function Footer() {
               Tif Technologies. Turning Ideas Into Intelligent Digital Solutions.
             </p>
             <a
-              href="mailto:hello@tiftechnologies.com"
+              href="mailto:sales@tiftechnologies.com"
               data-testid="footer-email"
               className="mt-4 inline-block font-mono text-sm text-blue-600 hover:text-blue-500"
             >
-              hello@tiftechnologies.com
+              sales@tiftechnologies.com
             </a>
           </div>
 

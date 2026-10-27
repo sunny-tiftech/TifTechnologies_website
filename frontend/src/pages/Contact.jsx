@@ -7,7 +7,7 @@ import { submitEnquiry } from "@/lib/api";
 import { services } from "@/lib/data";
 import { MaskedLines, Reveal } from "@/components/Motion";
 
-const budgets = ["Under $5,000", "$5,000 – $15,000", "$15,000 – $50,000", "$50,000+"];
+const budgets = ["Under ₹1 Lakh", "₹1 Lakh – ₹3 Lakh", "₹3 Lakh – ₹10 Lakh", "₹10 Lakh+"];
 
 const nextSteps = [
   { num: "01", text: "We review your requirements and goals." },
@@ -112,11 +112,11 @@ export default function Contact() {
                 </span>
                 <p className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-slate-400">Prefer email?</p>
                 <a
-                  href="mailto:hello@tiftechnologies.com"
+                  href="mailto:sales@tiftechnologies.com"
                   data-testid="contact-email-link"
                   className="mt-1.5 inline-block font-medium text-blue-600 hover:text-blue-500"
                 >
-                  hello@tiftechnologies.com
+                  sales@tiftechnologies.com
                 </a>
               </div>
             </Reveal>
