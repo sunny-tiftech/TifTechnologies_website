@@ -16,15 +16,15 @@ const nextSteps = [
 ];
 
 const inputCls =
-  "w-full rounded-xl border border-white/10 bg-[#0E1424] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 transition-colors focus:border-cyan-400/60 focus:outline-none focus:ring-1 focus:ring-cyan-400/40";
+  "w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200";
 
 function Field({ label, testid, error, children }) {
   return (
     <label className="block">
-      <span className="mb-2 block font-mono text-xs uppercase tracking-[0.18em] text-slate-400">{label}</span>
+      <span className="mb-2 block font-mono text-xs uppercase tracking-[0.18em] text-slate-500">{label}</span>
       {children}
       {error && (
-        <span data-testid={`${testid}-error`} className="mt-1.5 block text-xs text-red-400">
+        <span data-testid={`${testid}-error`} className="mt-1.5 block text-xs text-red-600">
           {error}
         </span>
       )}
@@ -80,14 +80,14 @@ export default function Contact() {
   return (
     <main data-testid="contact-page" className="pt-32 md:pt-40">
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-cyan-400">Contact</p>
+        <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-600">Contact</p>
         <MaskedLines
           delay={0.1}
           as="h1"
-          className="mt-5 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl"
-          lines={["Let's build your", <>next <span className="text-glow text-cyan-300">big thing.</span></>]}
+          className="mt-5 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
+          lines={["Let's build your", <>next <span className="text-blue-600">big thing.</span></>]}
         />
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg">
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
           Launching a product, building a platform, integrating AI, or automating workflows — tell us where you want
           to go, and Tif Technologies will help turn your vision into reality.
         </p>
@@ -97,24 +97,24 @@ export default function Contact() {
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <Reveal>
-              <h2 className="font-display text-2xl font-bold text-white">What happens next</h2>
+              <h2 className="font-display text-2xl font-bold text-[#1E1A5E]">What happens next</h2>
               <ul className="mt-8 space-y-6">
                 {nextSteps.map((s) => (
                   <li key={s.num} className="flex gap-5">
-                    <span className="font-mono text-sm text-cyan-400">{s.num}</span>
-                    <p className="text-sm leading-relaxed text-slate-300">{s.text}</p>
+                    <span className="font-mono text-sm text-blue-600">{s.num}</span>
+                    <p className="text-sm leading-relaxed text-slate-600">{s.text}</p>
                   </li>
                 ))}
               </ul>
-              <div className="mt-12 rounded-2xl border border-white/8 bg-panel p-6">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-[#0E1424] text-cyan-400">
+              <div className="mt-12 rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(16,24,40,0.04)]">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-100 bg-[#EEF2FF] text-blue-600">
                   <Mail size={18} />
                 </span>
-                <p className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-slate-500">Prefer email?</p>
+                <p className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-slate-400">Prefer email?</p>
                 <a
                   href="mailto:hello@tiftechnologies.com"
                   data-testid="contact-email-link"
-                  className="mt-1.5 inline-block font-medium text-cyan-400 hover:text-cyan-300"
+                  className="mt-1.5 inline-block font-medium text-blue-600 hover:text-blue-500"
                 >
                   hello@tiftechnologies.com
                 </a>
@@ -129,21 +129,21 @@ export default function Contact() {
                 initial={{ opacity: 0, scale: 0.94 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="flex h-full min-h-[420px] flex-col items-center justify-center rounded-3xl border border-white/8 bg-panel p-10 text-center"
+                className="flex h-full min-h-[420px] flex-col items-center justify-center rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-[0_1px_2px_rgba(16,24,40,0.04)]"
               >
-                <span className="flex h-16 w-16 items-center justify-center rounded-full border border-cyan-400/40 bg-cyan-400/10 text-cyan-400">
+                <span className="flex h-16 w-16 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-blue-600">
                   <Check size={28} />
                 </span>
-                <h2 className="mt-6 font-display text-2xl font-bold text-white">
+                <h2 className="mt-6 font-display text-2xl font-bold text-[#1E1A5E]">
                   Thank you{form.name ? `, ${form.name.split(" ")[0]}` : ""}!
                 </h2>
-                <p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-400">
+                <p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-500">
                   Your enquiry has been received. Our team will review it and get back to you shortly.
                 </p>
                 <button
                   onClick={reset}
                   data-testid="contact-send-another"
-                  className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-cyan-400/60 hover:text-white"
+                  className="mt-8 inline-flex items-center gap-2 rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-blue-500 hover:text-[#1E1A5E]"
                 >
                   Send another enquiry <ArrowRight size={15} />
                 </button>
@@ -154,7 +154,7 @@ export default function Contact() {
                   onSubmit={onSubmit}
                   noValidate
                   data-testid="contact-form"
-                  className="rounded-3xl border border-white/8 bg-panel p-7 sm:p-9"
+                  className="rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_1px_2px_rgba(16,24,40,0.04)] sm:p-9"
                 >
                   <div className="grid gap-5 sm:grid-cols-2">
                     <Field label="Name" testid="contact-name" error={errors.name}>
@@ -238,7 +238,7 @@ export default function Contact() {
                     type="submit"
                     disabled={loading}
                     data-testid="contact-form-submit"
-                    className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-7 py-4 text-sm font-semibold text-[#0B0E17] transition hover:shadow-[0_0_32px_rgba(56,189,248,0.4)] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                    className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#1E1A5E] px-7 py-4 text-sm font-semibold text-white transition hover:shadow-[0_10px_30px_-8px_rgba(30,26,94,0.5)] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                   >
                     {loading ? "Sending..." : "Send Enquiry"} <ArrowRight size={16} />
                   </button>

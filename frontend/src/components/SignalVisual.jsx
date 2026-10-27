@@ -1,9 +1,9 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 const arcs = [
-  { r: 48, d: 0 },
-  { r: 82, d: 0.45 },
-  { r: 116, d: 0.9 },
+  { r: 48, d: 0, color: "#1E1A5E" },
+  { r: 82, d: 0.45, color: "#2563EB" },
+  { r: 116, d: 0.9, color: "#38BDF8" },
 ];
 
 function arcPath(cx, cy, r) {
@@ -38,10 +38,10 @@ export default function SignalVisual() {
       className="relative mx-auto aspect-square w-full max-w-[440px]"
     >
       <motion.div style={{ x: sx, y: sy }} className="relative h-full w-full">
-        <div className="absolute inset-0 rounded-full bg-[#1E1A5E]/60 blur-2xl" />
-        <div className="absolute inset-3 rounded-full border border-white/8 bg-[#0E1424]/80 backdrop-blur-sm" />
+        <div className="absolute inset-0 rounded-full bg-blue-100/70 blur-2xl" />
+        <div className="absolute inset-3 rounded-full border border-slate-200 bg-white/70 shadow-[0_24px_60px_-24px_rgba(30,26,94,0.25)] backdrop-blur-sm" />
         <motion.div
-          className="absolute inset-3 rounded-full border border-dashed border-cyan-400/20"
+          className="absolute inset-3 rounded-full border border-dashed border-blue-200"
           animate={{ rotate: 360 }}
           transition={{ duration: 44, repeat: Infinity, ease: "linear" }}
         />
@@ -51,19 +51,19 @@ export default function SignalVisual() {
               key={a.r}
               d={arcPath(160, 182, a.r)}
               fill="none"
-              stroke="#38BDF8"
+              stroke={a.color}
               strokeWidth="5"
               strokeLinecap="round"
-              animate={{ opacity: [0.2, 1, 0.2] }}
+              animate={{ opacity: [0.25, 1, 0.25] }}
               transition={{ duration: 2.4, repeat: Infinity, delay: a.d, ease: "easeInOut" }}
             />
           ))}
-          <circle cx="160" cy="182" r="9" fill="#FFFFFF" />
+          <circle cx="160" cy="182" r="9" fill="#1E1A5E" />
         </svg>
         {chips.map(([label, pos], i) => (
           <motion.span
             key={label}
-            className={`absolute ${pos} rounded-full border border-white/10 bg-[#121829]/90 px-3.5 py-1.5 font-mono text-xs text-slate-300 shadow-lg`}
+            className={`absolute ${pos} rounded-full border border-slate-200 bg-white px-3.5 py-1.5 font-mono text-xs text-slate-600 shadow-md`}
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut", delay: i * 0.6 }}
           >

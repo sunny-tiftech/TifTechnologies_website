@@ -22,10 +22,10 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#0B0E17] text-slate-300">
+        <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#F7F8FB] text-slate-600">
           <p>Something went wrong.</p>
           <button
-            className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#0B0E17]"
+            className="rounded-full bg-[#1E1A5E] px-5 py-2 text-sm font-semibold text-white"
             onClick={() => window.location.reload()}
           >
             Reload
@@ -70,7 +70,7 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <SmoothScroll />
-          <div className="min-h-screen overflow-x-clip bg-ink text-slate-200">
+          <div className="min-h-screen overflow-x-clip bg-[#F7F8FB] text-slate-600">
             <Nav />
             <Routes>
               <Route path="/" element={<Home />} />
@@ -93,7 +93,7 @@ function App() {
           </div>
         </AuthProvider>
       </BrowserRouter>
-      <Toaster position="bottom-right" theme="dark" richColors closeButton />
+      <Toaster position="bottom-right" theme="light" richColors closeButton />
     </ErrorBoundary>
   );
 }

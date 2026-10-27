@@ -24,6 +24,9 @@ Create a new website for Tif Technologies (Tif — The Ideaz Factory), a technol
 - Case study pages for all 9 portfolio projects (/portfolio/:slug) with overview, "what we built", stack, live links.
 - Admin auth (JWT httpOnly cookies, bcrypt, brute-force lockout) + protected enquiries inbox at /admin/enquiries. Admin: admin@tiftechnologies.com / TifAdmin@2026 (test credentials).
 - Email notification on every new enquiry via Emergent managed Resend (verified: 202 Accepted). Recipient currently test address delivered@resend.dev — replace OWNER_EMAIL in backend/.env with the owner's real email.
+- LIGHT THEME redesign (user rejected dark layout): light corporate theme — #F7F8FB base, navy #1E1A5E headings, blue #2563EB accents, white cards.
+- Portfolio now uses REAL screenshots of live sites (captured 2026-10-27 into /app/frontend/public/assets/work/): News Arena India, Khabar Gaon, News 4 Himachal, Jist News, HomeIVF, Dr Gauri Agarwal, Genestring Lab, Future Shift Labs (+tracker), GovernBetter. New items added: Jist News, GovernBetter; Future Shift Labs links tracker.futureshiftlabs.com. Sansadflix keeps stock image (no URL provided).
+- Fundle Loyalty Program: user's own 5 dashboard screenshots in /app/frontend/public/assets/fundle/ used as card image + case study gallery; content informed by fundle.ai (AI-powered retail/mall loyalty superintelligence). URL: newu.fundlezone.com. Stats updated: 12 products, 10 services, 4 news platforms.
 
 ## Backlog
 - P0: Set OWNER_EMAIL to the owner's real inbox (currently a test address); replace placeholder email hello@tiftechnologies.com; add phone/WhatsApp/location.

@@ -30,7 +30,7 @@ export default function Nav() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled || open
-          ? "border-b border-white/10 bg-[#0B0E17]/85 backdrop-blur-xl"
+          ? "border-b border-slate-200 bg-white/85 backdrop-blur-xl"
           : "border-b border-transparent"
       }`}
     >
@@ -46,13 +46,13 @@ export default function Nav() {
               to={l.to}
               data-testid={`nav-link-${l.label.toLowerCase()}`}
               className={`relative rounded-full px-4 py-2 text-sm transition-colors ${
-                pathname === l.to ? "text-white" : "text-slate-400 hover:text-white"
+                pathname === l.to ? "text-[#1E1A5E]" : "text-slate-500 hover:text-[#1E1A5E]"
               }`}
             >
               {pathname === l.to && (
                 <motion.span
                   layoutId="nav-pill"
-                  className="absolute inset-0 rounded-full border border-white/10 bg-white/10"
+                  className="absolute inset-0 rounded-full border border-blue-100 bg-[#EEF2FF]"
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 />
               )}
@@ -62,7 +62,7 @@ export default function Nav() {
           <Link
             to="/contact"
             data-testid="nav-cta"
-            className="ml-3 inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#0B0E17] transition hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(56,189,248,0.35)]"
+            className="ml-3 inline-flex items-center gap-1.5 rounded-full bg-[#1E1A5E] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-8px_rgba(30,26,94,0.5)]"
           >
             Start a Project <ArrowUpRight size={16} />
           </Link>
@@ -70,7 +70,7 @@ export default function Nav() {
 
         <button
           data-testid="nav-mobile-toggle"
-          className="p-2 text-white md:hidden"
+          className="p-2 text-[#1E1A5E] md:hidden"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -85,7 +85,7 @@ export default function Nav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25 }}
-            className="space-y-2 border-t border-white/10 bg-[#0B0E17]/95 px-6 py-6 backdrop-blur-xl md:hidden"
+            className="space-y-2 border-t border-slate-200 bg-white/95 px-6 py-6 backdrop-blur-xl md:hidden"
           >
             {links.map((l) => (
               <Link
@@ -93,7 +93,7 @@ export default function Nav() {
                 to={l.to}
                 data-testid={`nav-mobile-${l.label.toLowerCase()}`}
                 className={`block rounded-xl px-4 py-3 text-base ${
-                  pathname === l.to ? "bg-white/10 text-white" : "text-slate-300"
+                  pathname === l.to ? "bg-[#EEF2FF] text-[#1E1A5E]" : "text-slate-600"
                 }`}
               >
                 {l.label}
@@ -102,7 +102,7 @@ export default function Nav() {
             <Link
               to="/contact"
               data-testid="nav-mobile-cta"
-              className="block rounded-xl bg-white px-4 py-3 text-center font-semibold text-[#0B0E17]"
+              className="block rounded-xl bg-[#1E1A5E] px-4 py-3 text-center font-semibold text-white"
             >
               Start a Project
             </Link>

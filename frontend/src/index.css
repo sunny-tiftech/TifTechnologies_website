@@ -17,8 +17,8 @@ html.lenis body {
 
 body {
     margin: 0;
-    background: #0B0E17;
-    color: #E2E8F0;
+    background: #F7F8FB;
+    color: #475569;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -32,36 +32,32 @@ body::after {
     inset: 0;
     z-index: 60;
     pointer-events: none;
-    opacity: 0.045;
+    opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 ::selection {
-    background: rgba(6, 182, 212, 0.35);
-    color: #ffffff;
+    background: rgba(37, 99, 235, 0.22);
+    color: #14103F;
 }
 
 ::-webkit-scrollbar {
     width: 10px;
 }
 ::-webkit-scrollbar-track {
-    background: #0B0E17;
+    background: #F1F5F9;
 }
 ::-webkit-scrollbar-thumb {
-    background: #1E2A44;
+    background: #CBD5E1;
     border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #2A3A5C;
-}
-
-.text-glow {
-    text-shadow: 0 0 26px rgba(56, 189, 248, 0.45);
+    background: #94A3B8;
 }
 
 .text-outline {
     color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+    -webkit-text-stroke: 1px rgba(30, 26, 94, 0.12);
 }
 
 @keyframes marquee {

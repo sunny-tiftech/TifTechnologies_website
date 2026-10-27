@@ -15,15 +15,15 @@ export default function Portfolio() {
   return (
     <main data-testid="portfolio-page" className="pt-32 md:pt-40">
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-cyan-400">Portfolio</p>
+        <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-600">Portfolio</p>
         <MaskedLines
           delay={0.1}
           as="h1"
-          className="mt-5 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl"
-          lines={["Work that's already", <>out in the <span className="text-glow text-cyan-300">wild.</span></>]}
+          className="mt-5 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
+          lines={["Work that's already", <>out in the <span className="text-blue-600">wild.</span></>]}
         />
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg">
-          News platforms with custom CRMs, healthcare and lab portals, streaming, labs, and loyalty — products we
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+          News platforms with custom CRMs, healthcare and lab portals, governance research, and loyalty — products we
           designed, built, and shipped.
         </p>
       </section>
@@ -36,13 +36,13 @@ export default function Portfolio() {
               data-testid={`portfolio-filter-${c.toLowerCase().replace(/[^a-z]+/g, "-")}`}
               onClick={() => setCat(c)}
               className={`relative rounded-full px-4 py-2 text-sm transition-colors ${
-                cat === c ? "text-[#0B0E17]" : "border border-white/10 text-slate-400 hover:text-white"
+                cat === c ? "text-white" : "border border-slate-300 text-slate-600 hover:text-[#1E1A5E]"
               }`}
             >
               {cat === c && (
                 <motion.span
                   layoutId="portfolio-filter-pill"
-                  className="absolute inset-0 rounded-full bg-white"
+                  className="absolute inset-0 rounded-full bg-[#1E1A5E]"
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 />
               )}
@@ -59,17 +59,16 @@ export default function Portfolio() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: (i % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="group relative h-full overflow-hidden rounded-2xl border border-white/8 bg-panel"
+              className="group relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_-16px_rgba(37,99,235,0.18)]"
             >
-              <Link to={`/portfolio/${p.slug}`} data-testid={`portfolio-card-link-${i + 1}`} className="relative block aspect-[16/10] overflow-hidden">
+              <Link to={`/portfolio/${p.slug}`} data-testid={`portfolio-card-link-${i + 1}`} className="relative block aspect-[16/10] overflow-hidden border-b border-slate-100">
                 <img
                   src={p.image}
                   alt={p.name}
                   loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B0E17] via-[#0B0E17]/20 to-transparent" />
-                <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-[#0B0E17]/70 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-slate-300 backdrop-blur">
+                <span className="absolute left-4 top-4 rounded-full border border-slate-200 bg-white/85 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-slate-600 backdrop-blur">
                   {p.category}
                 </span>
               </Link>
@@ -77,7 +76,7 @@ export default function Portfolio() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <Link to={`/portfolio/${p.slug}`}>
-                      <h2 className="font-display text-lg font-semibold text-white transition-colors hover:text-cyan-300">
+                      <h2 className="font-display text-lg font-semibold text-[#1E1A5E] transition-colors hover:text-blue-600">
                         {p.name}
                       </h2>
                     </Link>
@@ -87,12 +86,12 @@ export default function Portfolio() {
                         target="_blank"
                         rel="noopener noreferrer"
                         data-testid={`portfolio-link-${i + 1}`}
-                        className="mt-1 inline-block font-mono text-xs text-cyan-400 hover:text-cyan-300"
+                        className="mt-1 inline-block font-mono text-xs text-blue-600 hover:text-blue-500"
                       >
                         {p.domain}
                       </a>
                     ) : (
-                      <p className="mt-1 font-mono text-xs text-slate-500">{p.domain}</p>
+                      <p className="mt-1 font-mono text-xs text-slate-400">{p.domain}</p>
                     )}
                   </div>
                   {p.url ? (
@@ -102,18 +101,18 @@ export default function Portfolio() {
                       rel="noopener noreferrer"
                       aria-label={`Visit ${p.name}`}
                       data-testid={`portfolio-open-${i + 1}`}
-                      className="rounded-full border border-white/10 p-2.5 text-slate-400 transition hover:border-cyan-400/50 hover:text-cyan-400"
+                      className="rounded-full border border-slate-200 p-2.5 text-slate-400 transition hover:border-blue-400 hover:text-blue-600"
                     >
                       <ArrowUpRight size={16} />
                     </a>
                   ) : null}
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-slate-400">{p.description}</p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-500">{p.description}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {p.tech.map((t) => (
                     <span
                       key={t}
-                      className="rounded-full border border-white/10 bg-[#0E1424] px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-slate-400"
+                      className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-slate-500"
                     >
                       {t}
                     </span>
@@ -122,7 +121,7 @@ export default function Portfolio() {
                 <Link
                   to={`/portfolio/${p.slug}`}
                   data-testid={`portfolio-case-study-${i + 1}`}
-                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-cyan-400 transition-all hover:gap-2.5"
+                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 transition-all hover:gap-2.5"
                 >
                   View case study <ArrowRight size={13} />
                 </Link>
@@ -133,7 +132,7 @@ export default function Portfolio() {
       </section>
 
       <CtaBand
-        title={<>Your product could be next. <span className="text-cyan-300">Let's ship it.</span></>}
+        title={<>Your product could be next. <span className="text-blue-600">Let's ship it.</span></>}
         sub="From newsrooms to labs to loyalty engines — we build platforms people rely on every day."
       />
     </main>
