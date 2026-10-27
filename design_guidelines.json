@@ -1,0 +1,193 @@
+{
+  "brand_identity": {
+    "company_name": "Tif Technologies",
+    "sub_brand": "Tif - The Ideaz Factory",
+    "tagline": "Turning Ideas Into Intelligent Digital Solutions",
+    "logo_concept": "Deep navy square container with clean white bold lowercase 'tif' lettering and distinct white wifi/signal radio arcs above the 'i', accompanied by a refined serif 'TECHNOLOGIES' wordmark below.",
+    "art_direction": "Awwwards Site-of-the-Day level dark, premium tech aesthetic with deep navy (#0B0E1A, #121829, #1E1A5E) base, crisp icy blue highlights (#38BDF8, #60A5FA), glowing cyan accents (#06B6D4), and high-contrast ivory text (#F8FAFC). Combines kinetic typography, line-by-line reveal animations, smooth Lenis-style momentum scrolling, asymmetric bento layout grids, interactive service matrices, dynamic tech stack filters, and live project modal previews.",
+    "theme_mode": "Dark tech primary with high-contrast light card accents and glowing glass panels"
+  },
+  "typography": {
+    "primary_headline_font": "'Syne', 'Clash Display', sans-serif (Display / High Tension)",
+    "secondary_heading_font": "'Plus Jakarta Sans', sans-serif (Precision Tech)",
+    "body_font": "'Plus Jakarta Sans', sans-serif (High Legibility)",
+    "mono_font": "'JetBrains Mono', monospace (Technical Data & Code Tags)",
+    "google_fonts_import": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap",
+    "hierarchy": {
+      "hero_title": "text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.08] font-['Syne']",
+      "section_title": "text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-snug font-['Syne']",
+      "card_title": "text-xl sm:text-2xl font-semibold tracking-normal text-slate-100 font-['Plus_Jakarta_Sans']",
+      "sub_title": "text-base sm:text-lg font-medium text-slate-400 leading-relaxed font-['Plus_Jakarta_Sans']",
+      "body_text": "text-sm sm:text-base font-normal text-slate-300 leading-relaxed",
+      "eyebrow_label": "text-xs font-mono uppercase tracking-[0.25em] text-cyan-400 font-bold"
+    }
+  },
+  "colors": {
+    "background_dark": "#0B0E17",
+    "background_card_dark": "#121829",
+    "background_card_elevated": "#1A2238",
+    "primary_navy": "#1E1A5E",
+    "brand_blue": "#2563EB",
+    "accent_cyan": "#06B6D4",
+    "accent_glow": "#38BDF8",
+    "text_primary": "#F8FAFC",
+    "text_secondary": "#94A3B8",
+    "text_muted": "#64748B",
+    "border_subtle": "rgba(255, 255, 255, 0.08)",
+    "border_glow": "rgba(56, 189, 248, 0.3)",
+    "surface_glass": "rgba(18, 24, 41, 0.75)",
+    "overlay_backdrop": "backdrop-blur-xl bg-[#0B0E17]/80"
+  },
+  "layout_and_grid": {
+    "container_max_width": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "bento_grid_hero": "grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8",
+    "bento_grid_services": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
+    "bento_grid_portfolio": "grid grid-cols-1 md:grid-cols-12 gap-6",
+    "section_padding": "py-20 lg:py-28"
+  },
+  "required_pages": [
+    {
+      "name": "Home",
+      "path": "/",
+      "sections": [
+        "Navigation Bar (Logo, Nav links, CTA, Mobile drawer)",
+        "Kinetic Hero (Masked line-by-line reveal, interactive 3D signal wave canvas, stat metrics, CTA buttons)",
+        "About Tif Technologies (Interactive story card with key highlights)",
+        "Core Services Preview (Bento grid showcase of top services with modal preview trigger)",
+        "Tech Stack Interactive Filter & Marquee (Categorized pills: Frontend, Backend, Mobile, DB, AI)",
+        "Featured Portfolio Showcase (News Arenas, Medical & Loyalty platforms with live site links)",
+        "Proven Strategic Approach (Step-by-step process visualization)",
+        "Global Lead Magnet / Conversion CTA Section",
+        "Footer (Full directory, contact quick-links, legal, glowing logo mark)"
+      ]
+    },
+    {
+      "name": "Services",
+      "path": "/services",
+      "sections": [
+        "Services Hero Header",
+        "All 10 Dedicated Service Cards with interactive depth, features list, tech badge pills, and direct enquiry trigger: 1. Web Development, 2. Mobile App Development, 3. Backend & Custom Software Development, 4. Leads Management Systems, 5. AI Solutions & API Integrations, 6. AI Agents & Automation, 7. News Websites & CRM Solutions, 8. Social Media Marketing, 9. Search Engine Optimization (SEO), 10. Loyalty Program Solutions",
+        "Service Consultation CTA"
+      ]
+    },
+    {
+      "name": "Portfolio",
+      "path": "/portfolio",
+      "sections": [
+        "Portfolio Hero Header with category filter tabs (All, News & Publishing, Platforms & Healthcare, Loyalty Programs)",
+        "Interactive Project Cards with live domain links, tech stack tags, outcome metrics, and detail dialog trigger",
+        "Project Case Studies Grid featuring newsarenaindia.com, khabargaon.com, news4himachal.in, homeivf.com, drgauriagarwal.com, genestringlab.com, Sansadflix, futureshiftlabs.com, Fundle Loyalty Program",
+        "Start a Project CTA"
+      ]
+    },
+    {
+      "name": "Contact",
+      "path": "/contact",
+      "sections": [
+        "Contact Hero with Direct Communication Channels",
+        "Interactive Enquiry Form (Name, Email, Phone, Service Choice, Budget Range, Message) with real-time state validation, submitting toast via Sonner, and animated Success Card state",
+        "Office Location & Direct Reach Info (Email, Call, Working hours)"
+      ]
+    }
+  ],
+  "portfolio_data": [
+    {
+      "name": "News Arena India",
+      "domain": "newsarenaindia.com",
+      "category": "News & Publishing",
+      "description": "High-speed digital news publishing portal with automated newsroom workflow, realtime CRM, and instant breaking news push notifications.",
+      "tech": ["Next.js", "Node.js", "PostgreSQL", "News CRM"],
+      "image": "https://images.unsplash.com/photo-1589186161289-9eb8898086df?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwzfHxuZXdzcm9vbSUyMHN0dWRpbyUyMGRpZ2l0YWwlMjBtZWRpYSUyMGJyb2FkY2FzdCUyMHNvZnR3YXJlfGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85"
+    },
+    {
+      "name": "Khabar Gaon",
+      "domain": "khabargaon.com",
+      "category": "News & Publishing",
+      "description": "Regional hyperlocal news system engineered for multi-author editorial management and high concurrency traffic.",
+      "tech": ["React.js", "Django", "MySQL", "Content CRM"],
+      "image": "https://images.unsplash.com/photo-1551710029-607e06bd45ff?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwxfHxuZXdzcm9vbSUyMHN0dWRpbyUyMGRpZ2l0YWwlMjBtZWRpYSUyMGJyb2FkY2FzdCUyMHNvZnR3YXJlfGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85"
+    },
+    {
+      "name": "News 4 Himachal",
+      "domain": "news4himachal.in",
+      "category": "News & Publishing",
+      "description": "State-wide news engine with custom editorial roles, multimedia distribution, and analytics dashboard.",
+      "tech": ["Next.js", "Node.js", "PostgreSQL"],
+      "image": "https://images.unsplash.com/photo-1651465531201-7e430660fd82?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxuZXdzcm9vbSUyMHN0dWRpbyUyMGRpZ2l0YWwlMjBtZWRpYSUyMGJyb2FkY2FzdCUyMHNvZnR3YXJlfGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85"
+    },
+    {
+      "name": "Home IVF",
+      "domain": "homeivf.com",
+      "category": "Platforms & Healthcare",
+      "description": "At-home fertility care appointment booking and doctor consultation patient portal with end-to-end data encryption.",
+      "tech": ["React.js", "Node.js", "PostgreSQL", "Flutter Mobile App"],
+      "image": "https://images.unsplash.com/photo-1688565631550-ff8aa569f71a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwbGFib3JhdG9yeSUyMGhlYWx0aGNhcmUlMjB0ZWNobm9sb2d5JTIwZG9jdG9yJTIwc2NyZWVufGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85"
+    },
+    {
+      "name": "Dr. Gauri Agarwal",
+      "domain": "drgauriagarwal.com",
+      "category": "Platforms & Healthcare",
+      "description": "Renowned healthcare specialist digital brand platform featuring online consultation booking and patient education hub.",
+      "tech": ["Next.js", "Tailwind CSS", "Node.js"],
+      "image": "https://images.unsplash.com/photo-1582560469781-1965b9af903d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwbGFib3JhdG9yeSUyMGhlYWx0aGNhcmUlMjB0ZWNobm9sb2d5JTIwZG9jdG9yJTIwc2NyZWVufGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85"
+    },
+    {
+      "name": "Genestring Lab",
+      "domain": "genestringlab.com",
+      "category": "Platforms & Healthcare",
+      "description": "Advanced diagnostic genetics lab portal with digital report delivery, sample tracking, and clinic integration.",
+      "tech": ["React.js", "Python", "MS SQL Server"],
+      "image": "https://images.unsplash.com/photo-1599045118108-bf9954418b76?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHwyfHxtZWRpY2FsJTIwbGFib3JhdG9yeSUyMGhlYWx0aGNhcmUlMjB0ZWNobm9sb2d5JTIwZG9jdG9yJTIwc2NyZWVufGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85"
+    },
+    {
+      "name": "Sansadflix",
+      "domain": "sansadflix.com",
+      "category": "Platforms & Healthcare",
+      "description": "Civic governance and public policy digital video platform delivering streaming content and archive management.",
+      "tech": ["Next.js", "Node.js", "AWS Cloud", "MongoDB"],
+      "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjB0ZWTechJhdGlvbiUyMGFnZW5jeSUyMG9mZmljZSUyMHNlcnZlciUyMHNvZnR3YXJlfGVufDB8fHx8MTc5MxAwMDkwOHww&ixlib=rb-4.1.0&q=85"
+    },
+    {
+      "name": "Future Shift Labs",
+      "domain": "futureshiftlabs.com",
+      "category": "Platforms & Healthcare",
+      "description": "Tech innovation incubation showcase platform with interactive product demos and lead generation engine.",
+      "tech": ["React.js", "Python", "Django", "PostgreSQL"],
+      "image": "https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjB0ZWNoJTIwYWdlbmN5JTIwb2ZmaWNlJTIwc2VydmVyJTIwc29mdHdhcmUlMjBkaWdpdGFsJTIwZGV2ZWxvcGVyc3xlbnwwfHx8fDE3OTMxMDA4OTh8MA&ixlib=rb-4.1.0&q=85"
+    },
+    {
+      "name": "Fundle Loyalty Program",
+      "domain": "fundle.ai",
+      "category": "Loyalty Programs",
+      "description": "Enterprise customer engagement & reward automation platform with real-time points accrual, Meta ads lead integration, and dynamic redemption engine.",
+      "tech": ["Flutter", "Node.js", "PostgreSQL", "AI Agents"],
+      "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB0ZWNoJTIwYWdlbmN5JTIwb2ZmaWNlJTIwc2VydmVyJTIwc29mdHdhcmUlMjBkaWdpdGFsJTIwZGV2ZWxvcGVyc3xlbnwwfHx8fDE3OTMxMDA4OTh8MA&ixlib=rb-4.1.0&q=85"
+    }
+  ],
+  "image_urls": {
+    "agency_office": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB0ZWNoJTIwYWdlbmN5JTIwb2ZmaWNlJTIwc2VydmVyJTIwc29mdHdhcmUlMjBkaWdpdGFsJTIwZGV2ZWxvcGVyc3xlbnwwfHx8fDE3OTMxMDA4OTh8MA&ixlib=rb-4.1.0&q=85",
+    "laptop_code": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjB0ZWNoJTIwYWdlbmN5JTIwb2ZmaWNlJTIwc2VydmVyJTIwc29mdHdhcmUlMjBkaWdpdGFsJTIwZGV2ZWxvcGVyc3xlbnwwfHx8fDE3OTMxMDA4OTh8MA&ixlib=rb-4.1.0&q=85",
+    "developers_working": "https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjB0ZWNoJTIwYWdlbmN5JTIwb2ZmaWNlJTIwc2VydmVyJTIwc29mdHdhcmUlMjBkaWdpdGFsJTIwZGV2ZWxvcGVyc3xlbnwwfHx8fDE3OTMxMDA4OTh8MA&ixlib=rb-4.1.0&q=85",
+    "newsroom_studio": "https://images.unsplash.com/photo-1589186161289-9eb8898086df?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwzfHxuZXdzcm9vbSUyMHN0dWRpbyUyMGRpZ2l0YWwlMjBtZWRpYSUyMGJyb2FkY2FzdCUyMHNvZnR3YXJlfGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85",
+    "broadcast_monitor": "https://images.unsplash.com/photo-1551710029-607e06bd45ff?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwxfHxuZXdzcm9vbSUyMHN0dWRpbyUyMGRpZ2l0YWwlMjBtZWRpYSUyMGJyb2FkY2FzdCUyMHNvZnR3YXJlfGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85",
+    "medical_scrubs": "https://images.unsplash.com/photo-1688565631550-ff8aa569f71a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwbGFib3JhdG9yeSUyMGhlYWx0aGNhcmUlMjB0ZWNobm9sb2d5JTIwZG9jdG9yJTIwc2NyZWVufGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85",
+    "medical_lab": "https://images.unsplash.com/photo-1582560469781-1965b9af903d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwbGFib3JhdG9yeSUyMGhlYWx0aGNhcmUlMjB0ZWNobm9sb2d5JTIwZG9jdG9yJTIwc2NyZWVufGVufDB8fHx8MTc5MzEwMDkwOXww&ixlib=rb-4.1.0&q=85"
+  },
+  "visual_enhancers": {
+    "interactive_signal_wave": "Custom Canvas / SVG pulse component representing digital wireless signal arcs from the logo",
+    "tracing_beam_border": "Hover-activated glowing border with blur backdrop bleed for featured cards",
+    "glassmorphism_nav": "Header navigation with backdrop-blur-xl bg-[#0B0E17]/80 and 1px border-white/10 stroke",
+    "marquee_strip": "Infinite smooth drift tech ticker with tech badges and skill logos",
+    "micro_interactions": "Framer motion scale-up on buttons, active page indicator pills, card tilt perspective, glowing cursor dot"
+  },
+  "instructions_to_main_agent": [
+    "Use JavaScript (.js/.jsx) for all components in /src.",
+    "Import Google Fonts ('Syne', 'Plus Jakarta Sans', 'JetBrains Mono') in index.css or index.html.",
+    "Implement Lenis smooth scroll and Framer Motion reveal effects on all main headings.",
+    "Ensure every interactive button, input, tab, card link, and nav item has explicit `data-testid` attribute (e.g., `data-testid='nav-link-services'`, `data-testid='contact-form-submit'`).",
+    "Ensure header nav link is visible on desktop viewports and has solid/glass blurred background so text remains 100% legible over hero content.",
+    "Build the 10 services cards with deep descriptions, feature tags, and direct 'Request Consultation' modal/drawer action.",
+    "Include all portfolio items (News Arena, Khabar Gaon, News 4 Himachal, Home IVF, Dr Gauri Agarwal, Genestring Lab, Sansadflix, Future Shift Labs, Fundle Loyalty Program) with active category filters.",
+    "Add interactive form handling with success alert state and toast notifications using Sonner."
+  ]
+}

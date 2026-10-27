@@ -1,0 +1,85 @@
+import { Component, useEffect, useRef } from "react";
+import "@/App.css";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import Lenis from "lenis";
+import { Toaster } from "sonner";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
+import Home from "@/pages/Home";
+import Services from "@/pages/Services";
+import Portfolio from "@/pages/Portfolio";
+import Contact from "@/pages/Contact";
+
+class ErrorBoundary extends Component {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#0B0E17] text-slate-300">
+          <p>Something went wrong.</p>
+          <button
+            className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-[#0B0E17]"
+            onClick={() => window.location.reload()}
+          >
+            Reload
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function SmoothScroll() {
+  const lenisRef = useRef(null);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    lenisRef.current = lenis;
+    let raf = (t) => {
+      lenis.raf(t);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (lenisRef.current) lenisRef.current.scrollTo(0, { immediate: true });
+    else window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <BrowserRouter>
+        <SmoothScroll />
+        <div className="min-h-screen overflow-x-clip bg-ink text-slate-200">
+          <Nav />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
+          <Footer />
+        </div>
+      </BrowserRouter>
+      <Toaster position="bottom-right" theme="dark" richColors closeButton />
+    </ErrorBoundary>
+  );
+}
+
+export default App;
