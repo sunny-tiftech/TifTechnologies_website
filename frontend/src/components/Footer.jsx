@@ -17,7 +17,7 @@ export default function Footer() {
           <div className="lg:col-span-4">
             <img src="/assets/tif-logo.webp" alt="Tif Technologies" className="h-14 w-auto" />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-slate-500">
-              Tif — The Ideaz Factory. Turning Ideas Into Intelligent Digital Solutions.
+              Tif Technologies. Turning Ideas Into Intelligent Digital Solutions.
             </p>
             <a
               href="mailto:hello@tiftechnologies.com"
@@ -95,7 +95,7 @@ export default function Footer() {
 
       <div className="border-t border-slate-200">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <span data-testid="footer-copyright">© {year} Tif Technologies · The Ideaz Factory</span>
+          <span data-testid="footer-copyright">© {year} Tif Technologies</span>
           <span className="font-mono">Turning Ideas Into Intelligent Digital Solutions</span>
           <Link to="/admin" data-testid="footer-admin-link" className="font-mono transition-colors hover:text-blue-600">
             Admin

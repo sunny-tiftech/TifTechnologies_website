@@ -46,7 +46,7 @@ export default function Home() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
               </span>
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-blue-600">Tif — The Ideaz Factory</span>
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-blue-600">Tif Technologies</span>
             </div>
 
             <MaskedLines
