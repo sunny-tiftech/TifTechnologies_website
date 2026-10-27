@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/Motion";
+import { useContent } from "@/lib/content";
 
-export default function CtaBand({
-  title,
-  sub = "Tell us where you want to go — we'll engineer the way there.",
-}) {
+export default function CtaBand() {
+  const { content } = useContent();
+  const cta = content.cta;
+
   return (
     <section className="py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -17,14 +18,9 @@ export default function CtaBand({
             <div className="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-blue-200/50 blur-[90px]" />
             <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-indigo-200/50 blur-[90px]" />
             <h2 className="relative mx-auto max-w-3xl font-display text-3xl font-bold leading-tight text-[#1E1A5E] sm:text-4xl lg:text-5xl">
-              {title || (
-                <>
-                  Have an idea? Let's turn it into an{" "}
-                  <span className="text-blue-600">intelligent digital solution</span>.
-                </>
-              )}
+              {cta.line1} <span className="text-blue-600">{cta.accent}</span>
             </h2>
-            <p className="relative mx-auto mt-4 max-w-xl text-slate-600">{sub}</p>
+            <p className="relative mx-auto mt-4 max-w-xl text-slate-600">{cta.sub}</p>
             <Link
               to="/contact"
               data-testid="cta-band-button"

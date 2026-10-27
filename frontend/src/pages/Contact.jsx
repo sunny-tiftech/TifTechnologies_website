@@ -4,16 +4,8 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Check, Mail, ArrowRight } from "lucide-react";
 import { submitEnquiry } from "@/lib/api";
-import { services } from "@/lib/data";
-import { MaskedLines, Reveal } from "@/components/Motion";
-
-const budgets = ["Under ₹1 Lakh", "₹1 Lakh – ₹3 Lakh", "₹3 Lakh – ₹10 Lakh", "₹10 Lakh+"];
-
-const nextSteps = [
-  { num: "01", text: "We review your requirements and goals." },
-  { num: "02", text: "We schedule a discovery call with you." },
-  { num: "03", text: "You get a proposal with scope and timeline." },
-];
+import { useContent } from "@/lib/content";
+import { PageHero, Reveal } from "@/components/Motion";
 
 const inputCls =
   "w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200";
@@ -33,6 +25,9 @@ function Field({ label, testid, error, children }) {
 }
 
 export default function Contact() {
+  const { content } = useContent();
+  const { contactPage, site, services } = content;
+
   const [sp] = useSearchParams();
   const [form, setForm] = useState({
     name: "",
@@ -79,19 +74,13 @@ export default function Contact() {
 
   return (
     <main data-testid="contact-page" className="pt-32 md:pt-40">
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-600">Contact</p>
-        <MaskedLines
-          delay={0.1}
-          as="h1"
-          className="mt-5 font-display text-4xl font-bold leading-[1.08] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
-          lines={["Let's build your", <>next <span className="text-blue-600">big thing.</span></>]}
-        />
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          Launching a product, building a platform, integrating AI, or automating workflows — tell us where you want
-          to go, and Tif Technologies will help turn your vision into reality.
-        </p>
-      </section>
+      <PageHero
+        eyebrow={contactPage.eyebrow}
+        line1={contactPage.line1}
+        line2={contactPage.line2}
+        accent={contactPage.accent}
+        sub={contactPage.sub}
+      />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
         <div className="grid gap-12 lg:grid-cols-12">
@@ -99,7 +88,7 @@ export default function Contact() {
             <Reveal>
               <h2 className="font-display text-2xl font-bold text-[#1E1A5E]">What happens next</h2>
               <ul className="mt-8 space-y-6">
-                {nextSteps.map((s) => (
+                {contactPage.steps.map((s) => (
                   <li key={s.num} className="flex gap-5">
                     <span className="font-mono text-sm text-blue-600">{s.num}</span>
                     <p className="text-sm leading-relaxed text-slate-600">{s.text}</p>
@@ -112,11 +101,11 @@ export default function Contact() {
                 </span>
                 <p className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-slate-400">Prefer email?</p>
                 <a
-                  href="mailto:sales@tiftechnologies.com"
+                  href={`mailto:${site.email}`}
                   data-testid="contact-email-link"
                   className="mt-1.5 inline-block font-medium text-blue-600 hover:text-blue-500"
                 >
-                  sales@tiftechnologies.com
+                  {site.email}
                 </a>
               </div>
             </Reveal>
@@ -194,7 +183,7 @@ export default function Contact() {
                       >
                         <option value="">Select a service</option>
                         {services.map((s) => (
-                          <option key={s.num} value={s.title}>
+                          <option key={s.num + s.title} value={s.title}>
                             {s.title}
                           </option>
                         ))}
@@ -212,7 +201,7 @@ export default function Contact() {
                         data-testid="contact-budget-select"
                       >
                         <option value="">Select a range</option>
-                        {budgets.map((b) => (
+                        {contactPage.budgets.map((b) => (
                           <option key={b} value={b}>
                             {b}
                           </option>

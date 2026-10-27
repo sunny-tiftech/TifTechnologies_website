@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { services, portfolioItems } from "@/lib/data";
+import { useContent } from "@/lib/content";
 
 const companyLinks = [
   { to: "/", label: "Home" },
@@ -9,22 +9,25 @@ const companyLinks = [
 ];
 
 export default function Footer() {
+  const { content, pages } = useContent();
+  const { site, services, portfolio } = content;
   const year = new Date().getFullYear();
+
   return (
     <footer className="relative overflow-hidden border-t border-slate-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <img src="/assets/tif-logo.webp" alt="Tif Technologies" className="h-14 w-auto" />
+            <img src="/assets/tif-logo.webp" alt={site.brand} className="h-14 w-auto" />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-slate-500">
-              Tif Technologies. Turning Ideas Into Intelligent Digital Solutions.
+              {site.brand}. {site.tagline}.
             </p>
             <a
-              href="mailto:sales@tiftechnologies.com"
+              href={`mailto:${site.email}`}
               data-testid="footer-email"
               className="mt-4 inline-block font-mono text-sm text-blue-600 hover:text-blue-500"
             >
-              sales@tiftechnologies.com
+              {site.email}
             </a>
           </div>
 
@@ -32,7 +35,7 @@ export default function Footer() {
             <h4 className="font-mono text-xs uppercase tracking-[0.25em] text-slate-400">Services</h4>
             <ul className="mt-5 space-y-2.5">
               {services.slice(0, 6).map((s) => (
-                <li key={s.num}>
+                <li key={s.num + s.title}>
                   <Link
                     to="/services"
                     data-testid={`footer-service-${s.num}`}
@@ -59,14 +62,25 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              {pages.map((p) => (
+                <li key={p.slug}>
+                  <Link
+                    to={`/p/${p.slug}`}
+                    data-testid={`footer-page-${p.slug}`}
+                    className="text-sm text-slate-600 transition-colors hover:text-[#1E1A5E]"
+                  >
+                    {p.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="lg:col-span-3">
             <h4 className="font-mono text-xs uppercase tracking-[0.25em] text-slate-400">Selected Work</h4>
             <ul className="mt-5 space-y-2.5">
-              {portfolioItems.slice(0, 4).map((p) => (
-                <li key={p.name} className="font-mono text-sm text-slate-500">
+              {portfolio.slice(0, 4).map((p) => (
+                <li key={p.slug} className="font-mono text-sm text-slate-500">
                   {p.url ? (
                     <a
                       href={p.url}
@@ -95,8 +109,8 @@ export default function Footer() {
 
       <div className="border-t border-slate-200">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <span data-testid="footer-copyright">© {year} Tif Technologies</span>
-          <span className="font-mono">Turning Ideas Into Intelligent Digital Solutions</span>
+          <span data-testid="footer-copyright">© {year} {site.brand}</span>
+          <span className="font-mono">{site.tagline}</span>
           <Link to="/admin" data-testid="footer-admin-link" className="font-mono transition-colors hover:text-blue-600">
             Admin
           </Link>

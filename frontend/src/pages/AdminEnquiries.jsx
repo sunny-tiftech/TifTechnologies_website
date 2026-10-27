@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { LogOut, RefreshCw, Inbox } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { LogOut, RefreshCw, Inbox, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { api, useAuth } from "@/lib/AuthContext";
 
@@ -47,7 +47,14 @@ export default function AdminEnquiries() {
             Enquiries{items ? ` (${items.length})` : ""}
           </h1>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
+          <Link
+            to="/admin/content"
+            data-testid="admin-to-content"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:border-blue-500"
+          >
+            <FileText size={15} /> Site Content
+          </Link>
           <button
             onClick={load}
             data-testid="admin-refresh-button"

@@ -1,36 +1,30 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Globe, Bot, Sparkles } from "lucide-react";
-import { services, portfolioItems, techGroups, approachSteps, allTech } from "@/lib/data";
-import { MaskedLines, Reveal } from "@/components/Motion";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { useContent } from "@/lib/content";
+import { Icon } from "@/lib/icons";
+import { MaskedLines, Reveal, AccentLine } from "@/components/Motion";
 import Marquee from "@/components/Marquee";
 import SignalVisual from "@/components/SignalVisual";
 import CtaBand from "@/components/CtaBand";
-
-const stats = [
-  { value: "12", label: "Products shipped" },
-  { value: "10", label: "Service lines" },
-  { value: "04", label: "Live news platforms" },
-];
-
-const highlights = [
-  { icon: Globe, title: "Build from scratch", sub: "Digital products engineered end-to-end." },
-  { icon: Sparkles, title: "Enhance & scale", sub: "Existing platforms made faster, sharper, stronger." },
-  { icon: Bot, title: "Automate with AI", sub: "Intelligent workflows and agents in production." },
-];
 
 const cardCls =
   "h-full rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_16px_40px_-16px_rgba(37,99,235,0.18)]";
 
 export default function Home() {
+  const { content } = useContent();
+  const { hero, about, techGroups, services, portfolio, approach } = content;
+
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const visualY = useTransform(scrollYProgress, [0, 1], [0, 90]);
   const fade = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
-  const featured = portfolioItems.filter((p) => p.featured);
+  const allTech = techGroups.flatMap((g) => g.items);
+  const featured = portfolio.filter((p) => p.featured);
   const preview = services.slice(0, 4);
+  const moreCount = Math.max(services.length - 4, 0);
 
   return (
     <main data-testid="home-page">
@@ -46,18 +40,16 @@ export default function Home() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
               </span>
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-blue-600">Tif Technologies</span>
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-blue-600">{hero.eyebrow}</span>
             </div>
 
             <MaskedLines
               delay={0.15}
               className="font-display text-4xl font-bold leading-[1.08] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
               lines={[
-                "Turning Ideas",
-                <>
-                  Into <span className="text-blue-600">Intelligent</span>
-                </>,
-                "Digital Solutions.",
+                hero.line1,
+                <AccentLine text={hero.line2} accent={hero.accent} />,
+                hero.line3,
               ]}
             />
 
@@ -67,8 +59,7 @@ export default function Home() {
               transition={{ duration: 0.7, delay: 0.7 }}
               className="mt-6 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg"
             >
-              We build, scale, and grow businesses through innovative software, modern web experiences,
-              mobile applications, AI-powered solutions, and digital strategies.
+              {hero.sub}
             </motion.p>
 
             <motion.div
@@ -97,9 +88,9 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 1.05 }}
-              className="mt-14 flex gap-10 border-t border-slate-200 pt-8 sm:gap-16"
+              className="mt-14 flex flex-wrap gap-10 border-t border-slate-200 pt-8 sm:gap-16"
             >
-              {stats.map((s) => (
+              {hero.stats.map((s) => (
                 <div key={s.label}>
                   <div className="font-display text-3xl font-bold text-[#1E1A5E] sm:text-4xl">{s.value}</div>
                   <div className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400">{s.label}</div>
@@ -121,32 +112,24 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
           <div className="lg:col-span-5">
             <Reveal>
-              <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-600">About Tif Technologies</p>
+              <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-600">{about.eyebrow}</p>
               <h2 className="mt-4 font-display text-3xl font-bold leading-tight text-[#1E1A5E] sm:text-4xl">
-                A factory for ideas, <span className="text-blue-600">engineered for scale.</span>
+                {about.heading} <span className="text-blue-600">{about.headingAccent}</span>
               </h2>
             </Reveal>
           </div>
           <div className="lg:col-span-7">
             <Reveal delay={0.1}>
-              <p className="text-lg font-light leading-relaxed text-slate-700 sm:text-2xl">
-                We help businesses <span className="font-medium text-[#1E1A5E]">build, scale, and grow</span> through
-                innovative software, modern web experiences, mobile applications, AI-powered solutions, and digital
-                strategies.
-              </p>
+              <p className="text-lg font-light leading-relaxed text-slate-700 sm:text-2xl">{about.lead}</p>
             </Reveal>
             <Reveal delay={0.2}>
-              <p className="mt-6 max-w-2xl leading-relaxed text-slate-500">
-                Reliable, scalable, and user-focused solutions tailored to real business needs — from building digital
-                products from scratch to enhancing existing platforms, streamlining business processes, managing
-                leads, automating workflows, and integrating intelligent technologies.
-              </p>
+              <p className="mt-6 max-w-2xl leading-relaxed text-slate-500">{about.body}</p>
             </Reveal>
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {highlights.map((h, i) => (
+              {about.highlights.map((h, i) => (
                 <Reveal key={h.title} delay={0.15 + i * 0.08} className="h-full">
                   <div className="h-full rounded-2xl border border-slate-200 bg-[#F7F8FB] p-5 transition-colors hover:border-blue-300">
-                    <h.icon size={20} className="text-blue-600" />
+                    <Icon name={h.icon} size={20} className="text-blue-600" />
                     <h3 className="mt-3 text-sm font-semibold text-[#1E1A5E]">{h.title}</h3>
                     <p className="mt-1.5 text-xs leading-relaxed text-slate-500">{h.sub}</p>
                   </div>
@@ -171,18 +154,18 @@ export default function Home() {
                 data-testid="home-services-link"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 transition-all hover:gap-3"
               >
-                All 10 services <ArrowRight size={15} />
+                All {services.length} services <ArrowRight size={15} />
               </Link>
             </Reveal>
           </div>
 
           <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {preview.map((s, i) => (
-              <Reveal key={s.num} delay={(i % 3) * 0.08} className={i === 0 ? "md:col-span-2 lg:col-span-2" : ""}>
+              <Reveal key={s.num + s.title} delay={(i % 3) * 0.08} className={i === 0 ? "md:col-span-2 lg:col-span-2" : ""}>
                 <article data-testid={`home-service-card-${s.num}`} className={cardCls}>
                   <div className="flex items-start justify-between">
                     <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-blue-100 bg-[#EEF2FF] text-blue-600">
-                      <s.icon size={20} />
+                      <Icon name={s.icon} size={20} />
                     </span>
                     <span className="font-mono text-sm text-slate-300">{s.num}</span>
                   </div>
@@ -191,18 +174,20 @@ export default function Home() {
                 </article>
               </Reveal>
             ))}
-            <Reveal delay={0.24} className="md:col-span-2 lg:col-span-1">
-              <Link
-                to="/services"
-                data-testid="home-services-tile"
-                className="group flex h-full min-h-[180px] flex-col justify-between rounded-2xl border border-dashed border-slate-300 bg-transparent p-7 transition-all hover:border-blue-400 hover:bg-white"
-              >
-                <span className="font-display text-xl font-semibold text-[#1E1A5E]">And 6 more capabilities</span>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-all group-hover:gap-3">
-                  View all services <ArrowRight size={15} />
-                </span>
-              </Link>
-            </Reveal>
+            {moreCount > 0 && (
+              <Reveal delay={0.24} className="md:col-span-2 lg:col-span-1">
+                <Link
+                  to="/services"
+                  data-testid="home-services-tile"
+                  className="group flex h-full min-h-[180px] flex-col justify-between rounded-2xl border border-dashed border-slate-300 bg-transparent p-7 transition-all hover:border-blue-400 hover:bg-white"
+                >
+                  <span className="font-display text-xl font-semibold text-[#1E1A5E]">And {moreCount} more capabilities</span>
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-all group-hover:gap-3">
+                    View all services <ArrowRight size={15} />
+                  </span>
+                </Link>
+              </Reveal>
+            )}
           </div>
         </div>
       </section>
@@ -254,7 +239,7 @@ export default function Home() {
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {featured.map((p, i) => (
-              <Reveal key={p.name} delay={i * 0.09} className="h-full">
+              <Reveal key={p.slug} delay={i * 0.09} className="h-full">
                 <article
                   data-testid={`home-portfolio-card-${i + 1}`}
                   className="group relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.04)]"
@@ -303,14 +288,10 @@ export default function Home() {
             <h2 className="mt-4 max-w-2xl font-display text-3xl font-bold text-[#1E1A5E] sm:text-4xl">
               Technology expertise, business-first thinking.
             </h2>
-            <p className="mt-5 max-w-2xl leading-relaxed text-slate-500">
-              We combine thoughtful execution with a business-first mindset to deliver digital solutions that solve
-              real problems and create lasting value.
-            </p>
           </Reveal>
           <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            {approachSteps.map((s, i) => (
-              <Reveal key={s.num} delay={i * 0.08}>
+            {approach.map((s, i) => (
+              <Reveal key={s.num + s.title} delay={i * 0.08}>
                 <div className="border-t border-slate-200 pt-6">
                   <span className="font-mono text-sm text-blue-600">{s.num}</span>
                   <h3 className="mt-3 font-display text-lg font-semibold text-[#1E1A5E]">{s.title}</h3>

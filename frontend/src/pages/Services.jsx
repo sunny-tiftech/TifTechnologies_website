@@ -1,37 +1,35 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
-import { services } from "@/lib/data";
-import { MaskedLines, Reveal } from "@/components/Motion";
+import { useContent } from "@/lib/content";
+import { Icon } from "@/lib/icons";
+import { PageHero, Reveal } from "@/components/Motion";
 import CtaBand from "@/components/CtaBand";
 
 export default function Services() {
+  const { content } = useContent();
+  const { servicesPage, services } = content;
+
   return (
     <main data-testid="services-page" className="pt-32 md:pt-40">
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-600">Services</p>
-        <MaskedLines
-          delay={0.1}
-          as="h1"
-          className="mt-5 font-display text-4xl font-bold leading-[1.08] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
-          lines={["Capabilities across the", <>full product <span className="text-blue-600">lifecycle.</span></>]}
-        />
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          From the first wireframe to production scale — web, mobile, backend, AI, marketing, and loyalty. Ten ways
-          we turn ideas into working software.
-        </p>
-      </section>
+      <PageHero
+        eyebrow={servicesPage.eyebrow}
+        line1={servicesPage.line1}
+        line2={servicesPage.line2}
+        accent={servicesPage.accent}
+        sub={servicesPage.sub}
+      />
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="grid gap-5 md:grid-cols-2">
           {services.map((s, i) => (
-            <Reveal key={s.num} delay={(i % 2) * 0.08} className="h-full">
+            <Reveal key={s.num + s.title} delay={(i % 2) * 0.08} className="h-full">
               <article
                 data-testid={`service-card-${s.num}`}
                 className="h-full rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_16px_40px_-16px_rgba(37,99,235,0.18)] lg:p-8"
               >
                 <div className="flex items-start justify-between">
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-blue-100 bg-[#EEF2FF] text-blue-600">
-                    <s.icon size={20} />
+                    <Icon name={s.icon} size={20} />
                   </span>
                   <span className="font-mono text-sm text-slate-300">{s.num}</span>
                 </div>
@@ -58,10 +56,7 @@ export default function Services() {
         </div>
       </section>
 
-      <CtaBand
-        title={<>Not sure where to start? <span className="text-blue-600">Start with a conversation.</span></>}
-        sub="Tell us the problem — we'll map the technology, the team, and the timeline."
-      />
+      <CtaBand />
     </main>
   );
 }

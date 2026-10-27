@@ -1,5 +1,6 @@
 import os
 import re
+import json
 import asyncio
 import ipaddress
 import logging
@@ -88,6 +89,19 @@ class StatusCheck(BaseModel):
 
 class StatusCheckCreate(BaseModel):
     client_name: str
+
+
+# ---------- Custom pages ----------
+
+class CustomPage(BaseModel):
+    slug: str = Field(min_length=1, max_length=80)
+    title: str = Field(min_length=1, max_length=200)
+    intro: str = Field(default="", max_length=1000)
+    body: str = Field(default="", max_length=20000)
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+
+SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
 # ---------- Email (Emergent managed Resend) ----------
@@ -347,18 +361,51 @@ async def seed_admin():
         await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_password)}})
 
 
+async def seed_content():
+    existing = await db.site_content.find_one({"key": "site"})
+    if not existing:
+        with open(ROOT_DIR / "seed_content.json") as f:
+            data = json.load(f)
+        data["key"] = "site"
+        await db.site_content.insert_one(data)
+        logger.info("Site content seeded")
+
+
 @app.on_event("startup")
 async def startup():
     await seed_admin()
+    await seed_content()
     await db.users.create_index("email", unique=True)
     await db.login_attempts.create_index("identifier")
+    await db.custom_pages.create_index("slug", unique=True)
 
 
-# ---------- Routes ----------
+# ---------- Public content routes ----------
 
 @api_router.get("/")
 async def root():
     return {"message": "Tif Technologies API is running"}
+
+
+@api_router.get("/content")
+async def get_content():
+    doc = await db.site_content.find_one({"key": "site"}, {"_id": 0, "key": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Content not found")
+    return doc
+
+
+@api_router.get("/pages")
+async def list_pages():
+    return await db.custom_pages.find({}, {"_id": 0, "body": 0}).sort("created_at", 1).to_list(100)
+
+
+@api_router.get("/pages/{slug}")
+async def get_page(slug: str):
+    doc = await db.custom_pages.find_one({"slug": slug}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Page not found")
+    return doc
 
 
 @api_router.post("/contact")
@@ -379,10 +426,56 @@ async def create_contact(enquiry: ContactEnquiryCreate):
     return {"id": msg.id, "status": "received", "created_at": msg.created_at}
 
 
+# ---------- Admin routes ----------
+
 @api_router.get("/admin/enquiries")
 async def admin_enquiries(user=Depends(get_current_user)):
     docs = await db.contact_messages.find().sort("created_at", -1).to_list(500)
     return [{"id": d.get("_id"), **{k: v for k, v in d.items() if k != "_id"}} for d in docs]
+
+
+@api_router.put("/admin/content")
+async def update_content(request: Request, user=Depends(get_current_user)):
+    payload = await request.json()
+    if not isinstance(payload, dict) or "hero" not in payload or "services" not in payload:
+        raise HTTPException(status_code=400, detail="Invalid content payload")
+    payload = {k: v for k, v in payload.items() if k not in ("key", "_id")}
+    await db.site_content.update_one({"key": "site"}, {"$set": payload}, upsert=True)
+    return {"status": "saved"}
+
+
+@api_router.post("/admin/pages")
+async def create_page(page: CustomPage, user=Depends(get_current_user)):
+    if not SLUG_RE.match(page.slug):
+        raise HTTPException(status_code=400, detail="Slug must be lowercase letters, numbers and hyphens")
+    existing = await db.custom_pages.find_one({"slug": page.slug})
+    if existing:
+        raise HTTPException(status_code=409, detail="A page with this slug already exists")
+    await db.custom_pages.insert_one(page.model_dump())
+    return {"status": "created", "slug": page.slug}
+
+
+@api_router.put("/admin/pages/{slug}")
+async def update_page(slug: str, page: CustomPage, user=Depends(get_current_user)):
+    if not SLUG_RE.match(page.slug):
+        raise HTTPException(status_code=400, detail="Slug must be lowercase letters, numbers and hyphens")
+    existing = await db.custom_pages.find_one({"slug": slug})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Page not found")
+    if page.slug != slug:
+        clash = await db.custom_pages.find_one({"slug": page.slug})
+        if clash:
+            raise HTTPException(status_code=409, detail="A page with this slug already exists")
+    await db.custom_pages.update_one({"slug": slug}, {"$set": page.model_dump()})
+    return {"status": "updated", "slug": page.slug}
+
+
+@api_router.delete("/admin/pages/{slug}")
+async def delete_page(slug: str, user=Depends(get_current_user)):
+    result = await db.custom_pages.delete_one({"slug": slug})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Page not found")
+    return {"status": "deleted"}
 
 
 @api_router.post("/status", response_model=StatusCheck)

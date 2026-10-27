@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import { Toaster } from "sonner";
 import { AuthProvider, ProtectedRoute } from "@/lib/AuthContext";
+import { ContentProvider } from "@/lib/content";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Home from "@/pages/Home";
@@ -11,8 +12,10 @@ import Services from "@/pages/Services";
 import Portfolio from "@/pages/Portfolio";
 import CaseStudy from "@/pages/CaseStudy";
 import Contact from "@/pages/Contact";
+import CustomPage from "@/pages/CustomPage";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminEnquiries from "@/pages/AdminEnquiries";
+import AdminContent from "@/pages/AdminContent";
 
 class ErrorBoundary extends Component {
   state = { hasError: false };
@@ -69,28 +72,39 @@ function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <AuthProvider>
-          <SmoothScroll />
-          <div className="min-h-screen overflow-x-clip bg-[#F7F8FB] text-slate-600">
-            <Nav />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="/portfolio/:slug" element={<CaseStudy />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/admin" element={<AdminLogin />} />
-              <Route
-                path="/admin/enquiries"
-                element={
-                  <ProtectedRoute>
-                    <AdminEnquiries />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<Home />} />
-            </Routes>
-            <Footer />
-          </div>
+          <ContentProvider>
+            <SmoothScroll />
+            <div className="min-h-screen overflow-x-clip bg-[#F7F8FB] text-slate-600">
+              <Nav />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/portfolio" element={<Portfolio />} />
+                <Route path="/portfolio/:slug" element={<CaseStudy />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/p/:slug" element={<CustomPage />} />
+                <Route path="/admin" element={<AdminLogin />} />
+                <Route
+                  path="/admin/enquiries"
+                  element={
+                    <ProtectedRoute>
+                      <AdminEnquiries />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/content"
+                  element={
+                    <ProtectedRoute>
+                      <AdminContent />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="*" element={<Home />} />
+              </Routes>
+              <Footer />
+            </div>
+          </ContentProvider>
         </AuthProvider>
       </BrowserRouter>
       <Toaster position="bottom-right" theme="light" richColors closeButton />

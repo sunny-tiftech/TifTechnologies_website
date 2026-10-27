@@ -2,31 +2,27 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import { portfolioItems } from "@/lib/data";
-import { MaskedLines } from "@/components/Motion";
+import { useContent } from "@/lib/content";
+import { PageHero } from "@/components/Motion";
 import CtaBand from "@/components/CtaBand";
 
-const categories = ["All", "News & Publishing", "Websites & Platforms", "Loyalty Programs"];
-
 export default function Portfolio() {
+  const { content } = useContent();
+  const { portfolioPage, portfolio } = content;
+
+  const categories = ["All", ...Array.from(new Set(portfolio.map((p) => p.category)))];
   const [cat, setCat] = useState("All");
-  const items = cat === "All" ? portfolioItems : portfolioItems.filter((p) => p.category === cat);
+  const items = cat === "All" ? portfolio : portfolio.filter((p) => p.category === cat);
 
   return (
     <main data-testid="portfolio-page" className="pt-32 md:pt-40">
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-600">Portfolio</p>
-        <MaskedLines
-          delay={0.1}
-          as="h1"
-          className="mt-5 font-display text-4xl font-bold leading-[1.08] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
-          lines={["Work that's already", <>out in the <span className="text-blue-600">wild.</span></>]}
-        />
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          News platforms with custom CRMs, healthcare and lab portals, governance research, and loyalty — products we
-          designed, built, and shipped.
-        </p>
-      </section>
+      <PageHero
+        eyebrow={portfolioPage.eyebrow}
+        line1={portfolioPage.line1}
+        line2={portfolioPage.line2}
+        accent={portfolioPage.accent}
+        sub={portfolioPage.sub}
+      />
 
       <section className="mx-auto max-w-7xl px-4 pt-12 sm:px-6 lg:px-8 lg:pt-16">
         <div className="flex flex-wrap gap-2.5">
@@ -54,7 +50,7 @@ export default function Portfolio() {
         <div className="grid gap-6 py-12 md:grid-cols-2 lg:grid-cols-3 lg:py-16">
           {items.map((p, i) => (
             <motion.article
-              key={`${cat}-${p.name}`}
+              key={`${cat}-${p.slug}`}
               data-testid={`portfolio-card-${i + 1}`}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -131,10 +127,7 @@ export default function Portfolio() {
         </div>
       </section>
 
-      <CtaBand
-        title={<>Your product could be next. <span className="text-blue-600">Let's ship it.</span></>}
-        sub="From newsrooms to labs to loyalty engines — we build platforms people rely on every day."
-      />
+      <CtaBand />
     </main>
   );
 }

@@ -1,14 +1,16 @@
 import { Link, useParams, Navigate } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, Check } from "lucide-react";
-import { portfolioItems } from "@/lib/data";
+import { useContent } from "@/lib/content";
 import { MaskedLines, Reveal } from "@/components/Motion";
 import CtaBand from "@/components/CtaBand";
 
 export default function CaseStudy() {
   const { slug } = useParams();
-  const p = portfolioItems.find((x) => x.slug === slug);
+  const { content } = useContent();
+  const portfolio = content.portfolio;
+  const p = portfolio.find((x) => x.slug === slug);
   if (!p) return <Navigate to="/portfolio" replace />;
-  const num = String(portfolioItems.indexOf(p) + 1).padStart(2, "0");
+  const num = String(portfolio.indexOf(p) + 1).padStart(2, "0");
 
   return (
     <main data-testid="case-study-page" className="pt-32 md:pt-40">
@@ -48,7 +50,7 @@ export default function CaseStudy() {
               Visit live site <ArrowUpRight size={15} />
             </a>
           ) : null}
-          {p.extraLinks?.map((l) => (
+          {(p.extraLinks || []).map((l) => (
             <a
               key={l.url}
               href={l.url}
@@ -108,7 +110,7 @@ export default function CaseStudy() {
         </div>
       </section>
 
-      {p.gallery ? (
+      {p.gallery && p.gallery.length > 0 ? (
         <section className="mx-auto max-w-7xl px-4 pb-4 sm:px-6 lg:px-8">
           <Reveal>
             <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-600">Inside the product</p>
@@ -126,10 +128,7 @@ export default function CaseStudy() {
         </section>
       ) : null}
 
-      <CtaBand
-        title={<>Want a result like this? <span className="text-blue-600">Tell us your idea.</span></>}
-        sub="We bring the same engineering care to every project — from first wireframe to launch."
-      />
+      <CtaBand />
     </main>
   );
 }
