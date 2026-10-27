@@ -51,7 +51,7 @@ export default function Home() {
 
             <MaskedLines
               delay={0.15}
-              className="font-display text-4xl font-extrabold leading-[1.06] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
+              className="font-display text-4xl font-bold leading-[1.08] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
               lines={[
                 "Turning Ideas",
                 <>

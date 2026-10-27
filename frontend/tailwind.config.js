@@ -64,7 +64,7 @@ module.exports = {
         glow: '#38BDF8'
       },
       fontFamily: {
-        display: ['Syne', 'sans-serif'],
+        display: ['Sora', 'sans-serif'],
         body: ['"Plus Jakarta Sans"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace']
       },

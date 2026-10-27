@@ -84,7 +84,7 @@ export default function Contact() {
         <MaskedLines
           delay={0.1}
           as="h1"
-          className="mt-5 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
+          className="mt-5 font-display text-4xl font-bold leading-[1.08] tracking-tight text-[#1E1A5E] sm:text-5xl lg:text-6xl"
           lines={["Let's build your", <>next <span className="text-blue-600">big thing.</span></>]}
         />
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
