@@ -38,7 +38,7 @@ export default function AdminLogin() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl sm:p-10"
       >
-        <img src="/assets/tif-logo.webp" alt="Tif Technologies" className="h-12 w-auto" />
+        <img src="/assets/tif-logo.webp" alt="Tif Technologies" className="h-16 w-auto" />
         <h1 className="mt-6 font-display text-2xl font-bold text-[#1E1A5E]">Admin sign in</h1>
         <p className="mt-2 text-sm text-slate-500">Access the enquiries inbox.</p>
 

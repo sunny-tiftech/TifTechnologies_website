@@ -36,7 +36,7 @@ export default function Nav() {
     >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-[72px] lg:px-8">
         <Link to="/" data-testid="nav-logo" className="flex items-center gap-3">
-          <img src="/assets/tif-logo.webp" alt="Tif Technologies" className="h-11 w-auto" />
+          <img src="/assets/tif-logo.webp" alt="Tif Technologies" className="h-14 w-auto md:h-16" />
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">

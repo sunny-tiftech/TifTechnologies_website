@@ -18,7 +18,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <img src="/assets/tif-logo.webp" alt={site.brand} className="h-14 w-auto" />
+            <img src="/assets/tif-logo.webp" alt={site.brand} className="h-20 w-auto" />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-slate-500">
               {site.brand}. {site.tagline}.
             </p>
