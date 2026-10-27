@@ -97,6 +97,9 @@ export default function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <span data-testid="footer-copyright">© {year} Tif Technologies · The Ideaz Factory</span>
           <span className="font-mono">Turning Ideas Into Intelligent Digital Solutions</span>
+          <Link to="/admin" data-testid="footer-admin-link" className="font-mono transition-colors hover:text-cyan-400">
+            Admin
+          </Link>
         </div>
       </div>
     </footer>

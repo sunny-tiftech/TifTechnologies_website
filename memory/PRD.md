@@ -19,15 +19,13 @@ Create a new website for Tif Technologies (Tif — The Ideaz Factory), a technol
 
 ## Implemented (2026-10-27)
 - All 4 pages built and verified end-to-end (desktop 1440 + mobile 390 screenshots, no overflow).
-- POST/GET /api/contact verified with curl and a real form submission through the browser.
+- POST/GET contact flow verified with curl and a real form submission through the browser.
 - Lenis smooth scroll, masked line reveals, hover micro-interactions, editorial tech marquee, parallax hero visual.
+- Case study pages for all 9 portfolio projects (/portfolio/:slug) with overview, "what we built", stack, live links.
+- Admin auth (JWT httpOnly cookies, bcrypt, brute-force lockout) + protected enquiries inbox at /admin/enquiries. Admin: admin@tiftechnologies.com / TifAdmin@2026 (test credentials).
+- Email notification on every new enquiry via Emergent managed Resend (verified: 202 Accepted). Recipient currently test address delivered@resend.dev — replace OWNER_EMAIL in backend/.env with the owner's real email.
 
 ## Backlog
-- P0: Replace placeholder email hello@tiftechnologies.com with real contact details; add phone/WhatsApp/location.
-- P1: Admin enquiries inbox (view submissions), email notification on new enquiry (Resend), SEO metadata per page.
-- P2: Individual case-study pages per portfolio project, testimonials, careers page.
-
-## Next Tasks
-1. Real contact details on Contact page + footer.
-2. Admin panel to read enquiries.
-3. Email notifications for new enquiries.
+- P0: Set OWNER_EMAIL to the owner's real inbox (currently a test address); replace placeholder email hello@tiftechnologies.com; add phone/WhatsApp/location.
+- P1: SEO metadata per page, sitemap/robots, enquiry export (CSV), reply-from-inbox deep links.
+- P2: Testimonials, careers page, blog.

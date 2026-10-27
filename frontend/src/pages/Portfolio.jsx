@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { portfolioItems } from "@/lib/data";
-import { MaskedLines, Reveal } from "@/components/Motion";
+import { MaskedLines } from "@/components/Motion";
 import CtaBand from "@/components/CtaBand";
 
 const categories = ["All", "News & Publishing", "Websites & Platforms", "Loyalty Programs"];
@@ -60,7 +61,7 @@ export default function Portfolio() {
               transition={{ duration: 0.55, delay: (i % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
               className="group relative h-full overflow-hidden rounded-2xl border border-white/8 bg-panel"
             >
-              <div className="relative aspect-[16/10] overflow-hidden">
+              <Link to={`/portfolio/${p.slug}`} data-testid={`portfolio-card-link-${i + 1}`} className="relative block aspect-[16/10] overflow-hidden">
                 <img
                   src={p.image}
                   alt={p.name}
@@ -71,11 +72,15 @@ export default function Portfolio() {
                 <span className="absolute left-4 top-4 rounded-full border border-white/15 bg-[#0B0E17]/70 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-slate-300 backdrop-blur">
                   {p.category}
                 </span>
-              </div>
+              </Link>
               <div className="p-6 pt-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h2 className="font-display text-lg font-semibold text-white">{p.name}</h2>
+                    <Link to={`/portfolio/${p.slug}`}>
+                      <h2 className="font-display text-lg font-semibold text-white transition-colors hover:text-cyan-300">
+                        {p.name}
+                      </h2>
+                    </Link>
                     {p.url ? (
                       <a
                         href={p.url}
@@ -114,6 +119,13 @@ export default function Portfolio() {
                     </span>
                   ))}
                 </div>
+                <Link
+                  to={`/portfolio/${p.slug}`}
+                  data-testid={`portfolio-case-study-${i + 1}`}
+                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-cyan-400 transition-all hover:gap-2.5"
+                >
+                  View case study <ArrowRight size={13} />
+                </Link>
               </div>
             </motion.article>
           ))}

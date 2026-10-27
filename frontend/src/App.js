@@ -3,12 +3,16 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import { Toaster } from "sonner";
+import { AuthProvider, ProtectedRoute } from "@/lib/AuthContext";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Home from "@/pages/Home";
 import Services from "@/pages/Services";
 import Portfolio from "@/pages/Portfolio";
+import CaseStudy from "@/pages/CaseStudy";
 import Contact from "@/pages/Contact";
+import AdminLogin from "@/pages/AdminLogin";
+import AdminEnquiries from "@/pages/AdminEnquiries";
 
 class ErrorBoundary extends Component {
   state = { hasError: false };
@@ -64,18 +68,30 @@ function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <SmoothScroll />
-        <div className="min-h-screen overflow-x-clip bg-ink text-slate-200">
-          <Nav />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="*" element={<Home />} />
-          </Routes>
-          <Footer />
-        </div>
+        <AuthProvider>
+          <SmoothScroll />
+          <div className="min-h-screen overflow-x-clip bg-ink text-slate-200">
+            <Nav />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/portfolio/:slug" element={<CaseStudy />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route
+                path="/admin/enquiries"
+                element={
+                  <ProtectedRoute>
+                    <AdminEnquiries />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<Home />} />
+            </Routes>
+            <Footer />
+          </div>
+        </AuthProvider>
       </BrowserRouter>
       <Toaster position="bottom-right" theme="dark" richColors closeButton />
     </ErrorBoundary>
