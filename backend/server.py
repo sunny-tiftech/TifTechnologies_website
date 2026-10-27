@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import uuid
 import asyncio
 import ipaddress
 import logging
@@ -17,20 +18,22 @@ load_dotenv(ROOT_DIR / '.env')
 
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, Field, ConfigDict, BeforeValidator
-from typing import Annotated, List
-from bson import ObjectId
+from pydantic import BaseModel, Field
+from typing import List
 import bcrypt
 import jwt
 import httpx
 
+from sqlalchemy import Column, String, Integer, Text, JSON, select
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+MYSQL_URL = os.environ["MYSQL_URL"]
+engine = create_async_engine(MYSQL_URL, pool_pre_ping=True, pool_recycle=280)
+SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -44,19 +47,72 @@ EMAIL_FROM_NAME = os.environ["EMAIL_FROM_NAME"]
 EMAIL_REPLY_TO = os.environ.get("EMAIL_REPLY_TO")
 
 
-def _coerce_oid(v):
-    return str(v) if isinstance(v, ObjectId) else v
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
-PyObjectId = Annotated[str, BeforeValidator(_coerce_oid)]
+def _new_id() -> str:
+    return uuid.uuid4().hex
 
 
-class BaseDocument(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
-    id: PyObjectId = Field(default_factory=lambda: str(ObjectId()), alias="_id")
+# ---------- MySQL tables ----------
+
+class Base(DeclarativeBase):
+    pass
 
 
-# ---------- Contact enquiries ----------
+class UserRow(Base):
+    __tablename__ = "users"
+    id = Column(String(64), primary_key=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    password_hash = Column(String(255), nullable=False)
+    name = Column(String(120), default="Admin")
+    role = Column(String(40), default="admin")
+    created_at = Column(String(64))
+
+
+class LoginAttemptRow(Base):
+    __tablename__ = "login_attempts"
+    identifier = Column(String(255), primary_key=True)
+    count = Column(Integer, default=0)
+    last = Column(String(64))
+
+
+class SiteContentRow(Base):
+    __tablename__ = "site_content"
+    doc_key = Column(String(50), primary_key=True)
+    content = Column(JSON)
+
+
+class CustomPageRow(Base):
+    __tablename__ = "custom_pages"
+    slug = Column(String(80), primary_key=True)
+    title = Column(String(200))
+    intro = Column(Text)
+    body = Column(Text)
+    created_at = Column(String(64))
+
+
+class ContactMessageRow(Base):
+    __tablename__ = "contact_messages"
+    id = Column(String(64), primary_key=True)
+    name = Column(String(120))
+    email = Column(String(200))
+    phone = Column(String(40), default="")
+    service = Column(String(120), default="")
+    budget = Column(String(60), default="")
+    message = Column(Text)
+    created_at = Column(String(64))
+
+
+class StatusCheckRow(Base):
+    __tablename__ = "status_checks"
+    id = Column(String(64), primary_key=True)
+    client_name = Column(String(255))
+    timestamp = Column(String(64))
+
+
+# ---------- API models ----------
 
 class ContactEnquiryCreate(BaseModel):
     name: str = Field(min_length=1, max_length=120)
@@ -67,38 +123,22 @@ class ContactEnquiryCreate(BaseModel):
     message: str = Field(min_length=1, max_length=5000)
 
 
-class ContactMessage(BaseDocument):
-    name: str
-    email: str
-    phone: str = ""
-    service: str = ""
-    budget: str = ""
-    message: str
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-    def to_mongo(self):
-        return self.model_dump(by_alias=True)
-
-
 class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(ObjectId()))
+    id: str
     client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime
 
 
 class StatusCheckCreate(BaseModel):
     client_name: str
 
 
-# ---------- Custom pages ----------
-
 class CustomPage(BaseModel):
     slug: str = Field(min_length=1, max_length=80)
     title: str = Field(min_length=1, max_length=200)
     intro: str = Field(default="", max_length=1000)
     body: str = Field(default="", max_length=20000)
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    created_at: str = Field(default_factory=_now_iso)
 
 
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -217,16 +257,16 @@ def _row(label: str, value: str) -> str:
     )
 
 
-async def notify_new_enquiry(msg: ContactMessage) -> None:
+async def notify_new_enquiry(name: str, email: str, phone: str, service: str, budget: str, message: str, created_at: str) -> None:
     to = os.environ.get("OWNER_EMAIL")
     if not to:
         logger.info("OWNER_EMAIL not set; skipping enquiry notification email")
         return
     subject = "New enquiry received — Tif Technologies website"
     rows = (
-        _row("Name", msg.name) + _row("Email", msg.email) + _row("Phone", msg.phone)
-        + _row("Service", msg.service) + _row("Budget", msg.budget)
-        + _row("Message", msg.message) + _row("Received", msg.created_at)
+        _row("Name", name) + _row("Email", email) + _row("Phone", phone)
+        + _row("Service", service) + _row("Budget", budget)
+        + _row("Message", message) + _row("Received", created_at)
     )
     html = (
         '<table role="presentation" width="100%" style="background:#F1F5F9;padding:24px"><tr><td>'
@@ -273,16 +313,15 @@ async def get_current_user(request: Request) -> dict:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         if payload.get("type") != "access":
             raise HTTPException(status_code=401, detail="Invalid token type")
-        user = await db.users.find_one({"_id": ObjectId(payload["sub"])})
-        if not user:
-            raise HTTPException(status_code=401, detail="User not found")
-        user["_id"] = str(user["_id"])
-        user.pop("password_hash", None)
-        return user
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
+    async with SessionLocal() as session:
+        user = await session.get(UserRow, payload["sub"])
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        return {"id": user.id, "email": user.email, "name": user.name or "Admin", "role": user.role or "admin"}
 
 
 class LoginInput(BaseModel):
@@ -294,25 +333,29 @@ class LoginInput(BaseModel):
 async def login(body: LoginInput, request: Request, response: Response):
     email = body.email.strip().lower()
     identifier = f"{request.client.host}:{email}"
-    rec = await db.login_attempts.find_one({"identifier": identifier})
-    if rec and rec.get("count", 0) >= 5:
-        last = rec.get("last")
-        last_dt = datetime.fromisoformat(last) if isinstance(last, str) else last
-        if last_dt and datetime.now(timezone.utc) - last_dt < timedelta(minutes=15):
-            raise HTTPException(status_code=429, detail="Too many failed attempts. Try again in 15 minutes.")
-    user = await db.users.find_one({"email": email})
-    if not user or not verify_password(body.password, user["password_hash"]):
-        await db.login_attempts.update_one(
-            {"identifier": identifier},
-            {"$inc": {"count": 1}, "$set": {"last": datetime.now(timezone.utc).isoformat()}},
-            upsert=True,
-        )
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-    await db.login_attempts.delete_one({"identifier": identifier})
-    uid = str(user["_id"])
+    async with SessionLocal() as session:
+        attempt = await session.get(LoginAttemptRow, identifier)
+        if attempt and (attempt.count or 0) >= 5:
+            last_dt = datetime.fromisoformat(attempt.last) if attempt.last else None
+            if last_dt and datetime.now(timezone.utc) - last_dt < timedelta(minutes=15):
+                raise HTTPException(status_code=429, detail="Too many failed attempts. Try again in 15 minutes.")
+        result = await session.execute(select(UserRow).where(UserRow.email == email))
+        user = result.scalar_one_or_none()
+        if not user or not verify_password(body.password, user.password_hash):
+            if attempt:
+                attempt.count = (attempt.count or 0) + 1
+                attempt.last = _now_iso()
+            else:
+                session.add(LoginAttemptRow(identifier=identifier, count=1, last=_now_iso()))
+            await session.commit()
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        if attempt:
+            await session.delete(attempt)
+            await session.commit()
+        uid = user.id
     response.set_cookie(key="access_token", value=create_access_token(uid, email), httponly=True, secure=True, samesite="none", max_age=900, path="/")
     response.set_cookie(key="refresh_token", value=create_refresh_token(uid), httponly=True, secure=True, samesite="none", max_age=604800, path="/")
-    return {"id": uid, "email": email, "name": user.get("name", "Admin"), "role": user.get("role", "admin")}
+    return {"id": uid, "email": email, "name": user.name or "Admin", "role": user.role or "admin"}
 
 
 @api_router.post("/auth/logout")
@@ -324,7 +367,7 @@ async def logout(response: Response):
 
 @api_router.get("/auth/me")
 async def me(user=Depends(get_current_user)):
-    return {"id": user["_id"], "email": user["email"], "name": user.get("name", "Admin"), "role": user.get("role", "admin")}
+    return user
 
 
 @api_router.post("/auth/refresh")
@@ -338,74 +381,87 @@ async def refresh(request: Request, response: Response):
             raise HTTPException(status_code=401, detail="Invalid token type")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
-    user = await db.users.find_one({"_id": ObjectId(payload["sub"])})
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
-    response.set_cookie(key="access_token", value=create_access_token(payload["sub"], user["email"]), httponly=True, secure=True, samesite="none", max_age=900, path="/")
+    async with SessionLocal() as session:
+        user = await session.get(UserRow, payload["sub"])
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        email = user.email
+    response.set_cookie(key="access_token", value=create_access_token(payload["sub"], email), httponly=True, secure=True, samesite="none", max_age=900, path="/")
     return {"status": "refreshed"}
 
 
 async def seed_admin():
     admin_email = os.environ.get("ADMIN_EMAIL", "admin@example.com")
     admin_password = os.environ.get("ADMIN_PASSWORD", "admin123")
-    existing = await db.users.find_one({"email": admin_email})
-    if existing is None:
-        await db.users.insert_one({
-            "email": admin_email,
-            "password_hash": hash_password(admin_password),
-            "name": "Admin",
-            "role": "admin",
-            "created_at": datetime.now(timezone.utc),
-        })
-    elif not verify_password(admin_password, existing["password_hash"]):
-        await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_password)}})
+    async with SessionLocal() as session:
+        result = await session.execute(select(UserRow).where(UserRow.email == admin_email))
+        existing = result.scalar_one_or_none()
+        if existing is None:
+            session.add(UserRow(
+                id=_new_id(),
+                email=admin_email,
+                password_hash=hash_password(admin_password),
+                name="Admin",
+                role="admin",
+                created_at=_now_iso(),
+            ))
+        elif not verify_password(admin_password, existing.password_hash):
+            existing.password_hash = hash_password(admin_password)
+        await session.commit()
 
 
 async def seed_content():
-    existing = await db.site_content.find_one({"key": "site"})
-    if not existing:
-        with open(ROOT_DIR / "seed_content.json") as f:
-            data = json.load(f)
-        data["key"] = "site"
-        await db.site_content.insert_one(data)
-        logger.info("Site content seeded")
+    async with SessionLocal() as session:
+        existing = await session.get(SiteContentRow, "site")
+        if not existing:
+            with open(ROOT_DIR / "seed_content.json") as f:
+                data = json.load(f)
+            session.add(SiteContentRow(doc_key="site", content=data))
+            await session.commit()
+            logger.info("Site content seeded into MySQL")
 
 
 @app.on_event("startup")
 async def startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     await seed_admin()
     await seed_content()
-    await db.users.create_index("email", unique=True)
-    await db.login_attempts.create_index("identifier")
-    await db.custom_pages.create_index("slug", unique=True)
 
 
 # ---------- Public content routes ----------
 
 @api_router.get("/")
 async def root():
-    return {"message": "Tif Technologies API is running"}
+    return {"message": "Tif Technologies API is running", "database": "MySQL"}
 
 
 @api_router.get("/content")
 async def get_content():
-    doc = await db.site_content.find_one({"key": "site"}, {"_id": 0, "key": 0})
-    if not doc:
-        raise HTTPException(status_code=404, detail="Content not found")
-    return doc
+    async with SessionLocal() as session:
+        row = await session.get(SiteContentRow, "site")
+        if not row:
+            raise HTTPException(status_code=404, detail="Content not found")
+        return row.content
 
 
 @api_router.get("/pages")
 async def list_pages():
-    return await db.custom_pages.find({}, {"_id": 0, "body": 0}).sort("created_at", 1).to_list(100)
+    async with SessionLocal() as session:
+        result = await session.execute(
+            select(CustomPageRow.slug, CustomPageRow.title, CustomPageRow.intro, CustomPageRow.created_at)
+            .order_by(CustomPageRow.created_at)
+        )
+        return [dict(r._mapping) for r in result.all()]
 
 
 @api_router.get("/pages/{slug}")
 async def get_page(slug: str):
-    doc = await db.custom_pages.find_one({"slug": slug}, {"_id": 0})
-    if not doc:
-        raise HTTPException(status_code=404, detail="Page not found")
-    return doc
+    async with SessionLocal() as session:
+        row = await session.get(CustomPageRow, slug)
+        if not row:
+            raise HTTPException(status_code=404, detail="Page not found")
+        return {"slug": row.slug, "title": row.title, "intro": row.intro, "body": row.body, "created_at": row.created_at}
 
 
 @api_router.post("/contact")
@@ -413,25 +469,45 @@ async def create_contact(enquiry: ContactEnquiryCreate):
     email = enquiry.email.strip()
     if "@" not in email or "." not in email.split("@")[-1]:
         raise HTTPException(status_code=400, detail="Invalid email address")
-    msg = ContactMessage(
+    row = ContactMessageRow(
+        id=_new_id(),
         name=enquiry.name.strip(),
         email=email,
         phone=enquiry.phone.strip(),
         service=enquiry.service.strip(),
         budget=enquiry.budget.strip(),
         message=enquiry.message.strip(),
+        created_at=_now_iso(),
     )
-    await db.contact_messages.insert_one(msg.to_mongo())
-    asyncio.create_task(notify_new_enquiry(msg))
-    return {"id": msg.id, "status": "received", "created_at": msg.created_at}
+    async with SessionLocal() as session:
+        session.add(row)
+        await session.commit()
+    asyncio.create_task(notify_new_enquiry(row.name, row.email, row.phone, row.service, row.budget, row.message, row.created_at))
+    return {"id": row.id, "status": "received", "created_at": row.created_at}
 
 
 # ---------- Admin routes ----------
 
 @api_router.get("/admin/enquiries")
 async def admin_enquiries(user=Depends(get_current_user)):
-    docs = await db.contact_messages.find().sort("created_at", -1).to_list(500)
-    return [{"id": d.get("_id"), **{k: v for k, v in d.items() if k != "_id"}} for d in docs]
+    async with SessionLocal() as session:
+        result = await session.execute(
+            select(ContactMessageRow).order_by(ContactMessageRow.created_at.desc()).limit(500)
+        )
+        rows = result.scalars().all()
+        return [
+            {
+                "id": r.id,
+                "name": r.name,
+                "email": r.email,
+                "phone": r.phone,
+                "service": r.service,
+                "budget": r.budget,
+                "message": r.message,
+                "created_at": r.created_at,
+            }
+            for r in rows
+        ]
 
 
 @api_router.put("/admin/content")
@@ -440,7 +516,14 @@ async def update_content(request: Request, user=Depends(get_current_user)):
     if not isinstance(payload, dict) or "hero" not in payload or "services" not in payload:
         raise HTTPException(status_code=400, detail="Invalid content payload")
     payload = {k: v for k, v in payload.items() if k not in ("key", "_id")}
-    await db.site_content.update_one({"key": "site"}, {"$set": payload}, upsert=True)
+    async with SessionLocal() as session:
+        row = await session.get(SiteContentRow, "site")
+        if not row:
+            row = SiteContentRow(doc_key="site", content=payload)
+            session.add(row)
+        else:
+            row.content = payload
+        await session.commit()
     return {"status": "saved"}
 
 
@@ -448,10 +531,12 @@ async def update_content(request: Request, user=Depends(get_current_user)):
 async def create_page(page: CustomPage, user=Depends(get_current_user)):
     if not SLUG_RE.match(page.slug):
         raise HTTPException(status_code=400, detail="Slug must be lowercase letters, numbers and hyphens")
-    existing = await db.custom_pages.find_one({"slug": page.slug})
-    if existing:
-        raise HTTPException(status_code=409, detail="A page with this slug already exists")
-    await db.custom_pages.insert_one(page.model_dump())
+    async with SessionLocal() as session:
+        existing = await session.get(CustomPageRow, page.slug)
+        if existing:
+            raise HTTPException(status_code=409, detail="A page with this slug already exists")
+        session.add(CustomPageRow(slug=page.slug, title=page.title, intro=page.intro, body=page.body, created_at=page.created_at))
+        await session.commit()
     return {"status": "created", "slug": page.slug}
 
 
@@ -459,41 +544,53 @@ async def create_page(page: CustomPage, user=Depends(get_current_user)):
 async def update_page(slug: str, page: CustomPage, user=Depends(get_current_user)):
     if not SLUG_RE.match(page.slug):
         raise HTTPException(status_code=400, detail="Slug must be lowercase letters, numbers and hyphens")
-    existing = await db.custom_pages.find_one({"slug": slug})
-    if not existing:
-        raise HTTPException(status_code=404, detail="Page not found")
-    if page.slug != slug:
-        clash = await db.custom_pages.find_one({"slug": page.slug})
-        if clash:
-            raise HTTPException(status_code=409, detail="A page with this slug already exists")
-    await db.custom_pages.update_one({"slug": slug}, {"$set": page.model_dump()})
+    async with SessionLocal() as session:
+        existing = await session.get(CustomPageRow, slug)
+        if not existing:
+            raise HTTPException(status_code=404, detail="Page not found")
+        if page.slug != slug:
+            clash = await session.get(CustomPageRow, page.slug)
+            if clash:
+                raise HTTPException(status_code=409, detail="A page with this slug already exists")
+            session.add(CustomPageRow(slug=page.slug, title=page.title, intro=page.intro, body=page.body, created_at=existing.created_at))
+            await session.delete(existing)
+        else:
+            existing.title = page.title
+            existing.intro = page.intro
+            existing.body = page.body
+        await session.commit()
     return {"status": "updated", "slug": page.slug}
 
 
 @api_router.delete("/admin/pages/{slug}")
 async def delete_page(slug: str, user=Depends(get_current_user)):
-    result = await db.custom_pages.delete_one({"slug": slug})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Page not found")
+    async with SessionLocal() as session:
+        row = await session.get(CustomPageRow, slug)
+        if not row:
+            raise HTTPException(status_code=404, detail="Page not found")
+        await session.delete(row)
+        await session.commit()
     return {"status": "deleted"}
 
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
-    status_obj = StatusCheck(client_name=input.client_name)
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
+    row = StatusCheckRow(id=_new_id(), client_name=input.client_name, timestamp=_now_iso())
+    async with SessionLocal() as session:
+        session.add(row)
+        await session.commit()
+    return StatusCheck(id=row.id, client_name=row.client_name, timestamp=datetime.fromisoformat(row.timestamp))
 
 
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    return status_checks
+    async with SessionLocal() as session:
+        result = await session.execute(select(StatusCheckRow).limit(1000))
+        rows = result.scalars().all()
+        return [
+            StatusCheck(id=r.id, client_name=r.client_name, timestamp=datetime.fromisoformat(r.timestamp))
+            for r in rows
+        ]
 
 
 app.include_router(api_router)
@@ -509,4 +606,4 @@ app.add_middleware(
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    client.close()
+    await engine.dispose()
