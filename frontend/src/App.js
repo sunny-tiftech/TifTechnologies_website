@@ -9,6 +9,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Home from "@/pages/Home";
 import Services from "@/pages/Services";
+import ServiceDetail from "@/pages/ServiceDetail";
 import Portfolio from "@/pages/Portfolio";
 import CaseStudy from "@/pages/CaseStudy";
 import Contact from "@/pages/Contact";
@@ -79,6 +80,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/services" element={<Services />} />
+                <Route path="/services/:slug" element={<ServiceDetail />} />
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/portfolio/:slug" element={<CaseStudy />} />
                 <Route path="/contact" element={<Contact />} />

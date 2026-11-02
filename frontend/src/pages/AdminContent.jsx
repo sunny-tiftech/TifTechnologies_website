@@ -26,6 +26,12 @@ const pairs = (s, ka, kb) =>
     return { [ka]: (a || "").trim(), [kb]: rest.join("|").trim() };
   });
 const pairsToLines = (a, ka, kb) => (Array.isArray(a) ? a.map((x) => `${x[ka]} | ${x[kb]}`).join("\n") : "");
+const triples = (s, ka, kb, kc) =>
+  lines(s).map((l) => {
+    const parts = l.split("|");
+    return { [ka]: (parts[0] || "").trim(), [kb]: (parts[1] || "").trim(), [kc]: (parts.slice(2).join("|") || "").trim() };
+  });
+const triplesToLines = (a, ka, kb, kc) => (Array.isArray(a) ? a.map((x) => `${x[ka]} | ${x[kb]} | ${x[kc]}`).join("\n") : "");
 
 const Label = ({ children }) => (
   <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.15em] text-slate-500">{children}</span>
@@ -238,10 +244,38 @@ export default function AdminContent() {
                     </select>
                   </div>
                 </div>
-                <div><Label>Description</Label><textarea rows={2} className={inputCls} value={s.desc} onChange={setEvt(`services.${i}.desc`)} /></div>
+                <div><Label>Slug (URL: /services/your-slug)</Label><input className={inputCls} value={s.slug || ""} onChange={setEvt(`services.${i}.slug`)} data-testid={`service-slug-${i}`} /></div>
+                <div><Label>Short description (card)</Label><textarea rows={2} className={inputCls} value={s.desc} onChange={setEvt(`services.${i}.desc`)} /></div>
+                <div><Label>Overview (detail page)</Label><textarea rows={3} className={inputCls} value={s.overview || ""} onChange={setEvt(`services.${i}.overview`)} /></div>
                 <div>
-                  <Label>Features (one per line)</Label>
+                  <Label>Card features (one per line)</Label>
                   <textarea rows={3} className={inputCls} defaultValue={toLines(s.features)} onBlur={(e) => set(`services.${i}.features`, lines(e.target.value))} />
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <Label>What we deliver (one per line)</Label>
+                    <textarea rows={4} className={inputCls} defaultValue={toLines(s.deliverables)} onBlur={(e) => set(`services.${i}.deliverables`, lines(e.target.value))} />
+                  </div>
+                  <div>
+                    <Label>Technologies (one per line)</Label>
+                    <textarea rows={4} className={inputCls} defaultValue={toLines(s.technologies)} onBlur={(e) => set(`services.${i}.technologies`, lines(e.target.value))} />
+                  </div>
+                </div>
+                <div>
+                  <Label>Stats (one per line: value | label)</Label>
+                  <textarea rows={3} className={inputCls} defaultValue={pairsToLines(s.stats, "value", "label")} onBlur={(e) => set(`services.${i}.stats`, pairs(e.target.value, "value", "label"))} />
+                </div>
+                <div>
+                  <Label>Process steps (one per line: num | title | description)</Label>
+                  <textarea rows={4} className={inputCls} defaultValue={triplesToLines(s.process, "num", "title", "desc")} onBlur={(e) => set(`services.${i}.process`, triples(e.target.value, "num", "title", "desc"))} />
+                </div>
+                <div>
+                  <Label>Why choose us (one per line: title | description)</Label>
+                  <textarea rows={4} className={inputCls} defaultValue={pairsToLines(s.whyUs, "title", "desc")} onBlur={(e) => set(`services.${i}.whyUs`, pairs(e.target.value, "title", "desc"))} />
+                </div>
+                <div>
+                  <Label>FAQ (one per line: question | answer)</Label>
+                  <textarea rows={4} className={inputCls} defaultValue={pairsToLines(s.faq, "q", "a")} onBlur={(e) => set(`services.${i}.faq`, pairs(e.target.value, "q", "a"))} />
                 </div>
               </Group>
             ))}
@@ -251,7 +285,21 @@ export default function AdminContent() {
               onClick={() =>
                 set("services", [
                   ...draft.services,
-                  { num: String(draft.services.length + 1).padStart(2, "0"), icon: "globe", title: "New Service", desc: "", features: [] },
+                  {
+                    num: String(draft.services.length + 1).padStart(2, "0"),
+                    icon: "globe",
+                    title: "New Service",
+                    slug: `new-service-${draft.services.length + 1}`,
+                    desc: "",
+                    overview: "",
+                    features: [],
+                    deliverables: [],
+                    technologies: [],
+                    stats: [],
+                    process: [],
+                    whyUs: [],
+                    faq: [],
+                  },
                 ])
               }
               data-testid="service-add"

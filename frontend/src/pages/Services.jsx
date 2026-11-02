@@ -43,13 +43,24 @@ export default function Services() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  to={`/contact?service=${encodeURIComponent(s.title)}`}
-                  data-testid={`service-cta-${s.num}`}
-                  className="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 transition-all hover:gap-3"
-                >
-                  Request consultation <ArrowRight size={15} />
-                </Link>
+                <div className="mt-7 flex flex-wrap items-center gap-5">
+                  {s.slug && (
+                    <Link
+                      to={`/services/${s.slug}`}
+                      data-testid={`service-detail-${s.num}`}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1E1A5E] transition-all hover:gap-3"
+                    >
+                      Explore service <ArrowRight size={15} />
+                    </Link>
+                  )}
+                  <Link
+                    to={`/contact?service=${encodeURIComponent(s.title)}`}
+                    data-testid={`service-cta-${s.num}`}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 transition-all hover:gap-3"
+                  >
+                    Request consultation <ArrowRight size={15} />
+                  </Link>
+                </div>
               </article>
             </Reveal>
           ))}
