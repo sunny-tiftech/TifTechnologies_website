@@ -31,19 +31,30 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-MYSQL_URL = os.environ["MYSQL_URL"]
+from urllib.parse import quote_plus
+
+# Database configuration: supports either single MYSQL_URL or individual components
+MYSQL_URL = os.environ.get("MYSQL_URL")
+if not MYSQL_URL:
+    MYSQL_HOST = os.environ.get("MYSQL_HOST", "localhost")
+    MYSQL_PORT = os.environ.get("MYSQL_PORT", "3306")
+    MYSQL_USER = os.environ.get("MYSQL_USER", "tif_user")
+    MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD", "")
+    MYSQL_DATABASE = os.environ.get("MYSQL_DATABASE", "tif_db")
+    MYSQL_URL = f"mysql+aiomysql://{MYSQL_USER}:{quote_plus(MYSQL_PASSWORD)}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+
 engine = create_async_engine(MYSQL_URL, pool_pre_ping=True, pool_recycle=280)
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
-JWT_SECRET = os.environ["JWT_SECRET"]
+JWT_SECRET = os.environ.get("JWT_SECRET", "tif-default-jwt-secret-key-change-in-production")
 JWT_ALGORITHM = "HS256"
 
-EMAIL_BASE_URL = "https://integrations.emergentagent.com"
-EMAIL_KEY = os.environ["EMERGENT_EMAIL_KEY"]
-EMAIL_FROM_NAME = os.environ["EMAIL_FROM_NAME"]
+EMAIL_BASE_URL = os.environ.get("EMAIL_BASE_URL", "https://integrations.emergentagent.com")
+EMAIL_KEY = os.environ.get("EMERGENT_EMAIL_KEY")
+EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "Tif Technologies")
 EMAIL_REPLY_TO = os.environ.get("EMAIL_REPLY_TO")
 
 
@@ -220,6 +231,9 @@ def _assert_safe_email(subject: str, html: str) -> None:
 
 
 async def send_email(*, to: str, subject: str, html: str, reply_to: str | None = None) -> str | None:
+    if not EMAIL_KEY:
+        logger.info("EMAIL_KEY not configured; skipping email send")
+        return None
     _assert_safe_email(subject, html)
     payload = {"to": [to], "subject": subject, "html": html, "from_name": EMAIL_FROM_NAME}
     if reply_to or EMAIL_REPLY_TO:
