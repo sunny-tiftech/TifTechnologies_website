@@ -41,9 +41,9 @@ export default function ServiceDetail() {
   const { slug } = useParams();
   const { content } = useContent();
   const services = content.services || [];
-  const s = services.find((x) => x.slug === slug);
-  if (!s) return <Navigate to="/services" replace />;
-  const idx = services.indexOf(s);
+  const idx = services.findIndex((x) => x.slug === slug);
+  if (idx < 0) return <Navigate to="/services" replace />;
+  const s = services[idx];
   const next = services[(idx + 1) % services.length];
 
   return (
