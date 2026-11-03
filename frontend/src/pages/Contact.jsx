@@ -10,6 +10,11 @@ import { PageHero, Reveal } from "@/components/Motion";
 const inputCls =
   "w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200";
 
+// Captcha answer input: built without inputCls's `w-full` so the width classes never conflict
+// (in production builds `.w-full` is emitted after `.w-28` and would override it).
+const captchaInputCls =
+  "w-full shrink-0 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-200 sm:w-28";
+
 function Field({ label, testid, error, children }) {
   return (
     <label className="block">
@@ -246,9 +251,9 @@ export default function Contact() {
 
                   <div className="mt-5">
                     <Field label="Verify you're human" testid="contact-captcha" error={errors.captcha}>
-                      <div className="flex items-stretch gap-3">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
                         <div className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl border border-slate-200 bg-[#F7F8FB] px-4 py-3">
-                          <span data-testid="captcha-question" className="font-mono text-sm font-semibold text-[#1E1A5E]">
+                          <span data-testid="captcha-question" className="whitespace-nowrap font-mono text-sm font-semibold text-[#1E1A5E]">
                             {captcha.question || "Loading..."}
                           </span>
                           <button
@@ -262,7 +267,7 @@ export default function Contact() {
                           </button>
                         </div>
                         <input
-                          className={`${inputCls} w-28 text-center`}
+                          className={captchaInputCls}
                           inputMode="numeric"
                           placeholder="Answer"
                           value={captchaAnswer}

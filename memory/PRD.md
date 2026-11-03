@@ -34,6 +34,9 @@ Create a new website for Tif Technologies (Tif — The Ideaz Factory), a technol
 
 - SERVICE DETAIL PAGES (2026-11-02, user request "add more content to services pages"): added a separate detail page per service at `/services/<slug>` with all five chosen content types — Our process (4 steps), Technologies we use (chips), Results & stats (cards), Why choose us (cards), FAQ (accordion) — plus a "What we deliver" deliverables list. New frontend page `/app/frontend/src/pages/ServiceDetail.jsx`, route `/services/:slug` in App.js, and an "Explore service" link on each Services card. All detail content lives in the MySQL `site_content` doc (services[].slug/overview/deliverables/technologies/stats/process/whyUs/faq) and is editable from /admin/content → Services tab (new fields added). Seed + data.js regenerated via /app/scripts/enrich_services.py. Verified e2e: all 10 slugs render, FAQ accordion works, next-service nav works, admin edit round-trips to the public page.
 
+## Constraints to keep (do not undo)
+- CAPTCHA field on /contact: the answer input uses its own `captchaInputCls` (w-full on mobile, sm:w-28 on desktop, shrink-0). NEVER combine a fixed width like `w-28` on top of the shared `inputCls`, because `inputCls` already contains `w-full` and `w-full` wins in production builds (craco build), breaking the captcha row layout on the user's self-hosted server. The preview dev server emits Tailwind classes in a different order than the production build, so never judge class conflicts from the preview alone — verify a production build.
+
 ## Backlog
 - P0: Set OWNER_EMAIL to the owner's real inbox (currently a test address); replace placeholder email hello@tiftechnologies.com; add phone/WhatsApp/location.
 - P1: SEO metadata per page, sitemap/robots, enquiry export (CSV), reply-from-inbox deep links.
