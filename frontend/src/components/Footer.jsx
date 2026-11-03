@@ -102,8 +102,8 @@ export default function Footer() {
       </div>
 
       <div className="pointer-events-none select-none px-4" aria-hidden="true">
-        <div className="text-outline mx-auto max-w-7xl font-display text-[22vw] font-extrabold leading-[0.75] lg:text-[17rem]">
-          tif
+        <div className="text-outline mx-auto max-w-7xl font-display text-[18vw] font-extrabold leading-[0.75] lg:text-[12rem]">
+          tif tech
         </div>
       </div>
 
@@ -111,9 +111,6 @@ export default function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <span data-testid="footer-copyright">© {year} {site.brand}</span>
           <span className="font-mono">{site.tagline}</span>
-          <Link to="/admin" data-testid="footer-admin-link" className="font-mono transition-colors hover:text-blue-600">
-            Admin
-          </Link>
         </div>
       </div>
     </footer>
