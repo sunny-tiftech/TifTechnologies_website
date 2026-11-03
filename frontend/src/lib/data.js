@@ -987,7 +987,9 @@ export const defaultContent = {
       "label": "Frontend",
       "items": [
         "Next.js",
-        "React.js"
+        "React.js",
+        "HTML5",
+        "JavaScript"
       ]
     },
     {
@@ -995,7 +997,10 @@ export const defaultContent = {
       "items": [
         "Node.js",
         "Python",
-        "Django"
+        "Django",
+        "FastAPI",
+        "Flask",
+        "ASP.NET"
       ]
     },
     {

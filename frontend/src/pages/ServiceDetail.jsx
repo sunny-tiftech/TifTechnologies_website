@@ -47,7 +47,7 @@ export default function ServiceDetail() {
   const next = services[(idx + 1) % services.length];
 
   return (
-    <main data-testid="service-detail-page" className="pt-32 md:pt-40">
+    <main data-testid="service-detail-page" className="pt-24 md:pt-28">
       {/* Hero */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Link

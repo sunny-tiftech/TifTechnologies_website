@@ -15,7 +15,7 @@ export default function Portfolio() {
   const items = cat === "All" ? portfolio : portfolio.filter((p) => p.category === cat);
 
   return (
-    <main data-testid="portfolio-page" className="pt-32 md:pt-40">
+    <main data-testid="portfolio-page" className="pt-24 md:pt-28">
       <PageHero
         eyebrow={portfolioPage.eyebrow}
         line1={portfolioPage.line1}

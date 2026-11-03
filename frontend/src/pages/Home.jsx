@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <main data-testid="home-page">
       {/* HERO */}
-      <section ref={heroRef} className="relative flex min-h-screen flex-col justify-center overflow-hidden pt-28 pb-14">
+      <section ref={heroRef} className="relative flex min-h-screen flex-col justify-center overflow-hidden pt-24 pb-14">
         <div className="pointer-events-none absolute -top-40 right-[-10%] h-[560px] w-[560px] rounded-full bg-blue-100/70 blur-[140px]" />
         <div className="pointer-events-none absolute bottom-[-20%] left-[-10%] h-[480px] w-[480px] rounded-full bg-indigo-100/60 blur-[130px]" />
 

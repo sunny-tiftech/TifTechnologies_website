@@ -10,7 +10,7 @@ export default function Services() {
   const { servicesPage, services } = content;
 
   return (
-    <main data-testid="services-page" className="pt-32 md:pt-40">
+    <main data-testid="services-page" className="pt-24 md:pt-28">
       <PageHero
         eyebrow={servicesPage.eyebrow}
         line1={servicesPage.line1}

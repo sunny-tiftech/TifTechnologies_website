@@ -99,7 +99,7 @@ export default function Contact() {
   };
 
   return (
-    <main data-testid="contact-page" className="pt-32 md:pt-40">
+    <main data-testid="contact-page" className="pt-24 md:pt-28">
       <PageHero
         eyebrow={contactPage.eyebrow}
         line1={contactPage.line1}

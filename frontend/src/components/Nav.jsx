@@ -34,9 +34,9 @@ export default function Nav() {
           : "border-b border-transparent"
       }`}
     >
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-[72px] lg:px-8">
-        <Link to="/" data-testid="nav-logo" className="flex items-center gap-3">
-          <img src="/assets/tif-logo.webp" alt="Tif Technologies" className="h-14 w-auto md:h-16" />
+      <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-24 lg:px-8">
+        <Link to="/" data-testid="nav-logo" className="ml-1 flex items-center gap-3 sm:ml-2">
+          <img src="/assets/tif-logo.webp" alt="Tif Technologies" className="h-16 w-auto md:h-20" />
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">

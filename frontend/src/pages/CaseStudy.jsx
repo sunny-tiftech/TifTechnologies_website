@@ -13,7 +13,7 @@ export default function CaseStudy() {
   const num = String(portfolio.indexOf(p) + 1).padStart(2, "0");
 
   return (
-    <main data-testid="case-study-page" className="pt-32 md:pt-40">
+    <main data-testid="case-study-page" className="pt-24 md:pt-28">
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Link
           to="/portfolio"

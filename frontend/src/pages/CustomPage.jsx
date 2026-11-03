@@ -43,7 +43,7 @@ export default function CustomPage() {
   const paragraphs = (page.body || "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
 
   return (
-    <main data-testid="custom-page" className="pt-32 md:pt-40">
+    <main data-testid="custom-page" className="pt-24 md:pt-28">
       <section className="mx-auto max-w-3xl px-4 sm:px-6">
         <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-600">{content.site.brand}</p>
         <MaskedLines
