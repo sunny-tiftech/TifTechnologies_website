@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Check, Mail, ArrowRight } from "lucide-react";
-import { submitEnquiry } from "@/lib/api";
+import { Check, Mail, ArrowRight, RefreshCw } from "lucide-react";
+import { submitEnquiry, getCaptcha } from "@/lib/api";
 import { useContent } from "@/lib/content";
 import { PageHero, Reveal } from "@/components/Motion";
 
@@ -40,6 +40,22 @@ export default function Contact() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [captcha, setCaptcha] = useState({ captcha_id: "", question: "" });
+  const [captchaAnswer, setCaptchaAnswer] = useState("");
+
+  const loadCaptcha = useCallback(async () => {
+    try {
+      const r = await getCaptcha();
+      setCaptcha(r.data);
+      setCaptchaAnswer("");
+    } catch {
+      toast.error("Could not load captcha. Please refresh the page.");
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCaptcha();
+  }, [loadCaptcha]);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -48,6 +64,7 @@ export default function Contact() {
     if (!form.name.trim()) errs.name = "Please tell us your name.";
     if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) errs.email = "Please enter a valid email.";
     if (!form.message.trim()) errs.message = "A few words about your project helps us respond faster.";
+    if (!captchaAnswer.trim()) errs.captcha = "Please solve the captcha.";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -57,11 +74,13 @@ export default function Contact() {
     if (!validate()) return;
     setLoading(true);
     try {
-      await submitEnquiry(form);
+      await submitEnquiry({ ...form, captcha_id: captcha.captcha_id, captcha_answer: captchaAnswer });
       setSent(true);
       toast.success("Enquiry received — we'll get back to you shortly.");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+    } catch (err) {
+      const msg = err?.response?.data?.detail || "Something went wrong. Please try again.";
+      toast.error(typeof msg === "string" ? msg : "Something went wrong. Please try again.");
+      loadCaptcha();
     } finally {
       setLoading(false);
     }
@@ -70,6 +89,8 @@ export default function Contact() {
   const reset = () => {
     setSent(false);
     setForm({ name: "", email: "", phone: "", service: "", budget: "", message: "" });
+    setCaptchaAnswer("");
+    loadCaptcha();
   };
 
   return (
@@ -220,6 +241,35 @@ export default function Contact() {
                         onChange={set("message")}
                         data-testid="contact-message-input"
                       />
+                    </Field>
+                  </div>
+
+                  <div className="mt-5">
+                    <Field label="Verify you're human" testid="contact-captcha" error={errors.captcha}>
+                      <div className="flex items-stretch gap-3">
+                        <div className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl border border-slate-200 bg-[#F7F8FB] px-4 py-3">
+                          <span data-testid="captcha-question" className="font-mono text-sm font-semibold text-[#1E1A5E]">
+                            {captcha.question || "Loading..."}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={loadCaptcha}
+                            data-testid="captcha-refresh"
+                            aria-label="New captcha"
+                            className="shrink-0 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-200 hover:text-blue-600"
+                          >
+                            <RefreshCw size={15} />
+                          </button>
+                        </div>
+                        <input
+                          className={`${inputCls} w-28 text-center`}
+                          inputMode="numeric"
+                          placeholder="Answer"
+                          value={captchaAnswer}
+                          onChange={(e) => setCaptchaAnswer(e.target.value)}
+                          data-testid="contact-captcha-input"
+                        />
+                      </div>
                     </Field>
                   </div>
 

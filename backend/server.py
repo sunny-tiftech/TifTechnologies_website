@@ -132,6 +132,43 @@ class ContactEnquiryCreate(BaseModel):
     service: str = Field(default="", max_length=120)
     budget: str = Field(default="", max_length=60)
     message: str = Field(min_length=1, max_length=5000)
+    captcha_id: str = Field(min_length=1, max_length=64)
+    captcha_answer: str = Field(min_length=1, max_length=16)
+
+
+# ---------- Math CAPTCHA (server-side, no external keys) ----------
+# Challenges are stored in-process and expire after 10 minutes.
+_CAPTCHAS: dict = {}
+_CAPTCHA_TTL_SECONDS = 600
+
+
+def _captcha_prune():
+    now = datetime.now(timezone.utc).timestamp()
+    expired = [k for k, v in _CAPTCHAS.items() if now - v["ts"] > _CAPTCHA_TTL_SECONDS]
+    for k in expired:
+        _CAPTCHAS.pop(k, None)
+
+
+@api_router.get("/captcha")
+async def get_captcha():
+    _captcha_prune()
+    a = int.from_bytes(os.urandom(2), "big") % 9 + 1
+    b = int.from_bytes(os.urandom(2), "big") % 9 + 1
+    cid = _new_id()
+    _CAPTCHAS[cid] = {"answer": a + b, "ts": datetime.now(timezone.utc).timestamp()}
+    return {"captcha_id": cid, "question": f"What is {a} + {b}?"}
+
+
+def _verify_captcha(captcha_id: str, answer: str) -> bool:
+    rec = _CAPTCHAS.pop(captcha_id, None)
+    if not rec:
+        return False
+    if datetime.now(timezone.utc).timestamp() - rec["ts"] > _CAPTCHA_TTL_SECONDS:
+        return False
+    try:
+        return int(answer.strip()) == rec["answer"]
+    except ValueError:
+        return False
 
 
 class StatusCheck(BaseModel):
@@ -480,6 +517,8 @@ async def get_page(slug: str):
 
 @api_router.post("/contact")
 async def create_contact(enquiry: ContactEnquiryCreate):
+    if not _verify_captcha(enquiry.captcha_id, enquiry.captcha_answer):
+        raise HTTPException(status_code=400, detail="Captcha failed. Please solve the question and try again.")
     email = enquiry.email.strip()
     if "@" not in email or "." not in email.split("@")[-1]:
         raise HTTPException(status_code=400, detail="Invalid email address")
